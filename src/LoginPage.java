@@ -126,7 +126,6 @@ public class LoginPage extends JFrame{
             	String userType = usernameField.getText();
             	System.out.println(userType);
             	if (userType.equals("1")) {
-                	System.out.println("true");
                 	frmLoginpage.dispose();
             		new MainWindow(1);
             	}

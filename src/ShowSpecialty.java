@@ -3,22 +3,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
@@ -55,6 +45,7 @@ public class ShowSpecialty extends JPanel {
 		centerPanel.add(departmentText);
 		
 		JTextField departmentField = new JTextField();
+
 		departmentField.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		centerPanel.add(departmentField);
 		departmentField.setColumns(5);
@@ -84,6 +75,21 @@ public class ShowSpecialty extends JPanel {
 		tempPanel1.add(buttonPanel1, BorderLayout.SOUTH);
 		
 		JButton addDepartmentButton = new JButton("Add Department");
+		addDepartmentButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String departmentName = departmentField.getText();
+				if (EntityController.addDepartment(new Department(departmentName)) != -1){
+					changePanel(parentFrame,new ShowSpecialty(parentFrame));
+					JOptionPane.showMessageDialog(new JFrame(), "New Department is created");
+				}
+				else {
+					JOptionPane.showMessageDialog(new JFrame(), "Requirements is not met!!!");
+				}
+
+
+			}
+		});
 		addDepartmentButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		addDepartmentButton.setPreferredSize(new Dimension(300, 100));
 		buttonPanel1.add(addDepartmentButton);
@@ -177,6 +183,11 @@ public class ShowSpecialty extends JPanel {
 		deleteDepartmentButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		deleteDepartmentButton.setPreferredSize(new Dimension(300, 100));
 		buttonPanel2.add(deleteDepartmentButton);
+
+		JButton refreshButton1 = new JButton("Refresh");
+		refreshButton1.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		refreshButton1.setPreferredSize(new Dimension(300, 100));
+		buttonPanel2.add(refreshButton1);
 		
 		JButton cancelButton2 = new JButton("Cancel");
 		cancelButton2.addMouseListener(new MouseAdapter() {
@@ -232,8 +243,13 @@ public class ShowSpecialty extends JPanel {
 		centerPanel2.add(text2);
 		
 		JComboBox<String> departmentComboBox = new JComboBox();
+		departmentComboBox.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				departmentComboBox.setModel(new DefaultComboBoxModel(new String[] {"A","B"}));
+			}
+		});
 		departmentComboBox.setFont(new Font("Tahoma", Font.PLAIN, 30));
-		departmentComboBox.setModel(new DefaultComboBoxModel(new String[] {"A","B"}));
 		centerPanel2.add(departmentComboBox);
 		
 		
@@ -247,20 +263,28 @@ public class ShowSpecialty extends JPanel {
 		centerPanel2.add(new JLabel(""));
 		centerPanel2.add(new JLabel(""));
 		centerPanel2.add(new JLabel(""));
-		
 
-	
-		
-		
+
+
+
+
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		tempPanel.add(buttonPanel, BorderLayout.SOUTH);
-		
-		JButton addPersonnelButton = new JButton("Add Room");
+
+		JButton addPersonnelButton = new JButton("Add Expertise");
+		addPersonnelButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String expertiseName = field1.getText();
+				String depName = departmentComboBox.getSelectedItem().toString();
+				//EntityController.addExpertise(new Expertise(EntityController.getDepartment().department_id, expertiseName));
+			}
+		});
 		addPersonnelButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		addPersonnelButton.setPreferredSize(new Dimension(300, 100));
 		buttonPanel.add(addPersonnelButton);
-		
+
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addMouseListener(new MouseAdapter() {
 			@Override
@@ -271,15 +295,15 @@ public class ShowSpecialty extends JPanel {
 		cancelButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		cancelButton.setPreferredSize(new Dimension(300, 100));
 		buttonPanel.add(cancelButton);
-		
 
-		
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
 		//edit-delete expertise
 		JPanel tempPanel4 = new JPanel();
 		tempPanel4.setLayout(new BorderLayout(0, 0));
@@ -357,6 +381,12 @@ public class ShowSpecialty extends JPanel {
 		deleteExpertiseButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		deleteExpertiseButton.setPreferredSize(new Dimension(300, 100));
 		buttonPanel4.add(deleteExpertiseButton);
+
+
+		JButton refreshButton2 = new JButton("Refresh");
+		refreshButton2.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		refreshButton2.setPreferredSize(new Dimension(300, 100));
+		buttonPanel4.add(refreshButton2);
 		
 		JButton cancelButton4 = new JButton("Cancel");
 		cancelButton4.addMouseListener(new MouseAdapter() {

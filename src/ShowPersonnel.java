@@ -1,10 +1,7 @@
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.*;
 
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -17,6 +14,7 @@ import javax.swing.JFrame;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 public class ShowPersonnel extends JPanel {
 
@@ -66,7 +64,7 @@ public class ShowPersonnel extends JPanel {
             model1.addColumn(colName);
         }
 
-        
+        refreshDoctorTable(model1);
         JTable table1 = new JTable(model1);
         table1.setFocusable(false);
 
@@ -107,6 +105,17 @@ public class ShowPersonnel extends JPanel {
 		deleteDoctorButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		deleteDoctorButton.setPreferredSize(new Dimension(300, 100));
 		buttonPanel1.add(deleteDoctorButton);
+
+		JButton refreshButton1 = new JButton("Refresh");
+		refreshButton1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				refreshNurseTable(model1);
+			}
+		});
+		refreshButton1.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		refreshButton1.setPreferredSize(new Dimension(300, 100));
+		buttonPanel1.add(refreshButton1);
 		
 		JButton cancelButton1 = new JButton("Cancel");
 		cancelButton1.addMouseListener(new MouseAdapter() {
@@ -152,6 +161,7 @@ public class ShowPersonnel extends JPanel {
         for (String colName: col2){
             model2.addColumn(colName);
         }
+		refreshNurseTable(model2);
 
         
         JTable table2 = new JTable(model2);
@@ -193,6 +203,17 @@ public class ShowPersonnel extends JPanel {
 		deleteNurseButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		deleteNurseButton.setPreferredSize(new Dimension(300, 100));
 		buttonPanel2.add(deleteNurseButton);
+
+		JButton refreshButton2 = new JButton("Refresh");
+		refreshButton2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				refreshNurseTable(model2);
+			}
+		});
+		refreshButton2.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		refreshButton2.setPreferredSize(new Dimension(300, 100));
+		buttonPanel2.add(refreshButton2);
 		
 		JButton cancelButton2 = new JButton("Cancel");
 		cancelButton2.addMouseListener(new MouseAdapter() {
@@ -214,6 +235,26 @@ public class ShowPersonnel extends JPanel {
 		frame.getContentPane().add(newPanel, BorderLayout.CENTER);
 		frame.getContentPane().repaint();
 		frame.getContentPane().revalidate();
+	}
+
+	private void refreshDoctorTable(DefaultTableModel model) {
+		model.setRowCount(0);
+		ArrayList<Doctor> doctorArrayList = UserController.getDoctors();
+		for (Doctor doctor : doctorArrayList) {
+			Object[] rowData = {doctor.user_id, doctor.user_name, doctor.password, doctor.name_surname,doctor.age,doctor.gender};
+			model.addRow(rowData);
+
+		}
+	}
+
+	private void refreshNurseTable(DefaultTableModel model) {
+		model.setRowCount(0);
+		ArrayList<Nurse> nurseArrayList = UserController.getNurses();
+		for (Nurse nurse : nurseArrayList) {
+			Object[] rowData = {nurse.user_id, nurse.user_name, nurse.password, nurse.name_surname,nurse.age,nurse.gender};
+			model.addRow(rowData);
+
+		}
 	}
 
 }
