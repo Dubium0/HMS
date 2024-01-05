@@ -8,11 +8,10 @@ public class RoomAvailability {
 
     public  boolean availability;
 
-    public  RoomAvailability(int room_id, Date date, int patient_count, boolean availability){
+    public  RoomAvailability(int room_id, Date date){
         this.room_id = room_id;
         this.date = date;
-        this.patient_count = patient_count;
-        this.availability = availability;
+
     }
 
     @Override

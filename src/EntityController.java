@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.ArrayList;
 
 public class EntityController {
 
@@ -19,14 +20,133 @@ public class EntityController {
                 if (rs.next())  id   = rs.getInt(1);
                 expertise.expertise_id = id;
             }
+            stmt.close();
 
 
         }catch (SQLException e){
             e.printStackTrace();
         }
 
+        try {
+            myConn.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
         return id;
     }
+
+    public  static ArrayList<Expertise> getExpertises(){
+        Connection myConn   = DBConnection.getConnection();
+        String query = "Select  * FROM EXPERTISE;";
+        ArrayList<Expertise> expertises = new ArrayList<Expertise>();
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()){
+                Expertise expertise  = new Expertise(rs.getInt(2),rs.getString(3));
+                expertise.expertise_id = rs.getInt(1);
+                expertises.add(expertise);
+            }
+            stmt.close();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        try {
+            myConn.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return  expertises;
+    }
+
+    public  static ArrayList<Expertise> getExpertisesByDepartmentID(int department_id) {
+        Connection myConn   = DBConnection.getConnection();
+        String query = "Select  * FROM EXPERTISE where EXPERTISE.departmentID =  ?;";
+        ArrayList<Expertise> expertises = new ArrayList<Expertise>();
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            stmt.setInt(1,department_id);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()){
+                Expertise expertise  = new Expertise(rs.getInt(2),rs.getString(3));
+                expertise.expertise_id = rs.getInt(1);
+                expertises.add(expertise);
+            }
+            stmt.close();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        try {
+            myConn.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return  expertises;
+    }
+    public  static Expertise getExpertiseByName(String name) {
+        Connection myConn   = DBConnection.getConnection();
+        String query = "Select  * FROM EXPERTISE where EXPERTISE.expertiseName =  ?;";
+        Expertise expertise = null;
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            stmt.setString(1,name);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()){
+                expertise  = new Expertise(rs.getInt(2),rs.getString(3));
+                expertise.expertise_id = rs.getInt(1);
+
+            }
+            stmt.close();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        try {
+            myConn.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return  expertise;
+    }
+
+    public  static  Expertise getExpertiseByID(int expertise_id){
+        Connection myConn   = DBConnection.getConnection();
+        String query = "Select  * FROM EXPERTISE where EXPERTISE.expertiseID =  ?;";
+        Expertise expertise = null;
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            stmt.setInt(1,expertise_id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()){
+                expertise  = new Expertise(rs.getInt(2),rs.getString(3));
+                expertise.expertise_id = rs.getInt(1);
+
+            }
+            stmt.close();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        try {
+            myConn.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return  expertise;
+
+    }
+
+
 
     public  static int addDepartment( Department department){
         // if success, returns department id that is generated
@@ -42,13 +162,101 @@ public class EntityController {
                 if (rs.next())  id   = rs.getInt(1);
                 department.department_id = id;
             }
+            stmt.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        try {
+            myConn.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return id;
+
+    }
+
+    public  static  ArrayList<Department> getDepartments(){
+        Connection myConn   = DBConnection.getConnection();
+        String query = "Select  * FROM DEPARTMENT;";
+        ArrayList<Department> departments = new ArrayList<Department>();
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()){
+                Department department  = new Department(rs.getString(2));
+                department.department_id = rs.getInt(1);
+                departments.add(department);
+            }
+            stmt.close();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        try {
+            myConn.close();
         }catch (SQLException e){
             e.printStackTrace();
         }
 
-        return id;
+        return  departments;
 
     }
+
+    public  static  Department getDepartmentByID(int departmenID){
+        Connection myConn   = DBConnection.getConnection();
+        String query = "Select  * FROM DEPARTMENT where DEPARTMENT.departmentID =  ?;";
+        Department department = null;
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            stmt.setInt(1,departmenID);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()){
+                department  = new Department(rs.getString(2));
+                department.department_id = rs.getInt(1);
+
+            }
+            stmt.close();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        try {
+            myConn.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return  department;
+    }
+
+    public  static  Department getDepartmentByName(String name){
+        Connection myConn   = DBConnection.getConnection();
+        String query = "Select  * FROM DEPARTMENT where DEPARTMENT.departmentName =  ?;";
+        Department department = null;
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            stmt.setString(1,name);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()){
+                department  = new Department(rs.getString(2));
+                department.department_id = rs.getInt(1);
+
+            }
+            stmt.close();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        try {
+            myConn.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return  department;
+    }
+
 
     public  static int addRoom( Room room){
         // if success, returns department id that is generated
@@ -65,13 +273,103 @@ public class EntityController {
                 if (rs.next())  id   = rs.getInt(1);
                 room.room_id = id;
             }
+            stmt.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        try {
+            myConn.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return id;
+
+    }
+
+    public  static  ArrayList<Room> getRooms(){
+        Connection myConn   = DBConnection.getConnection();
+        String query = "Select  * FROM ROOM;";
+        ArrayList<Room> rooms = new ArrayList<Room>();
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()){
+                Room room  = new Room(rs.getString(2),rs.getInt(3));
+                room.room_id = rs.getInt(1);
+                rooms.add(room);
+            }
+            stmt.close();
         }catch (SQLException e){
             e.printStackTrace();
         }
 
-        return id;
+        try {
+            myConn.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return  rooms;
+    }
+
+    public  static  ArrayList<Room> getRoomsByType(String roomType){
+        Connection myConn   = DBConnection.getConnection();
+        String query = "Select  * FROM ROOM WHERE  ROOM.roomType  = ?;";
+        ArrayList<Room> rooms = new ArrayList<Room>();
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            stmt.setString(1,roomType);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()){
+                Room room  = new Room(rs.getString(2),rs.getInt(3));
+                room.room_id = rs.getInt(1);
+                rooms.add(room);
+            }
+            stmt.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        try {
+            myConn.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return  rooms;
 
     }
+
+    public  static  Room getRoomByID(int room_id){
+        Connection myConn   = DBConnection.getConnection();
+        String query = "Select  * FROM ROOM WHERE  ROOM.roomID  = ?;";
+        Room room = null;
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            stmt.setInt(1,room_id);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()){
+                room = new Room(rs.getString(2),rs.getInt(3));
+                room.room_id = rs.getInt(1);
+
+            }
+            stmt.close();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        try {
+            myConn.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return  room;
+    }
+
+
+
     public  static RoomAvailability getRoomAvailabilityForDateAndRoom(Date date,int room_id){
         Connection myConn = DBConnection.getConnection();
         String query = "SElECT * FROM ROOM_AVAILABILITY where ROOM_AVAILABILITY.date_ = ? and ROOM_AVAILABILITY.roomID = ? ;";
@@ -84,75 +382,91 @@ public class EntityController {
             ResultSet rs = stmt.executeQuery();
 
             if(rs.next()){
-                roomAvailability = new RoomAvailability(room_id,date,rs.getInt(3),rs.getBoolean(4));
+                roomAvailability = new RoomAvailability(room_id,date);
+                roomAvailability.patient_count = rs.getInt(3);
+                roomAvailability.availability = rs.getBoolean(4);
             }
+            stmt.close();
+        }catch (SQLException e){
+            // if not exist  than it is empty
+            roomAvailability = new RoomAvailability(room_id,date );
+            roomAvailability.patient_count = 0;
+            roomAvailability.availability = true;
+
+            e.printStackTrace();
+        }
+        try {
+            myConn.close();
         }catch (SQLException e){
             e.printStackTrace();
         }
-
         return  roomAvailability;
     }
 
-    public  static boolean incrementRoomPatientCountForDate(Date date, int room_id){
-        RoomAvailability currentRoomAvailability  = getRoomAvailabilityForDateAndRoom(date,room_id);
-        if(currentRoomAvailability ==null)return  false;
-
-
-        if(!currentRoomAvailability.availability){
-            System.out.println( currentRoomAvailability);
-            return false;
-        }
-
-        boolean flag = false;
-        boolean returnValue = false;
-
+    public  static ArrayList<RoomAvailability> getStatedRoomAvailabilityForRoom(int room_id){
         Connection myConn = DBConnection.getConnection();
-        String query = "INSERT INTO ROOM_AVAILABILITY (roomID, date_, patientCount,availability) VALUES\n" +
-                "( ? , ? ,1,  true) ON DUPLICATE KEY UPDATE patientCount = patientCount +1; ";
+        String query = "SElECT * FROM ROOM_AVAILABILITY where ROOM_AVAILABILITY.roomID = ? ;";
+        ArrayList<RoomAvailability> roomAvailabilities  = new ArrayList<RoomAvailability>();
 
-        try {
-            PreparedStatement  stmt = myConn.prepareStatement(query,PreparedStatement.RETURN_GENERATED_KEYS);
+        try{
+            PreparedStatement stmt = myConn.prepareStatement(query);
             stmt.setInt(1,room_id);
-            stmt.setDate(2,date);
 
-            int r = stmt.executeUpdate();
-            if(r>0){
-                flag = true;
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                RoomAvailability roomAvailability = new RoomAvailability(room_id,rs.getDate(2));
+                roomAvailability.patient_count  = rs.getInt(3);
+                roomAvailability.availability = rs.getBoolean(4);
+                roomAvailabilities.add(roomAvailability);
             }
-
-
+            stmt.close();
         }catch (SQLException e){
             e.printStackTrace();
         }
-
-
-        if(flag) {
-
-
-            String query_2 = "UPDATE ROOM_AVAILABILITY\n" +
-                    "\tset ROOM_AVAILABILITY.availability = false\n" +
-                    "    where ROOM_AVAILABILITY.roomID = ?  and ROOM_AVAILABILITY.date_ = ? \n" +
-                    "    and ROOM_AVAILABILITY.patientCount = (\n" +
-                    "    select roomCapacity\n" +
-                    "    from ROOM\n" +
-                    "    where ROOM.roomID =  ROOM_AVAILABILITY.roomID\n" +
-                    "    ); ";
-            try {
-                PreparedStatement stmt = myConn.prepareStatement(query_2,PreparedStatement.RETURN_GENERATED_KEYS);
-                stmt.setInt(1, room_id);
-                stmt.setDate(2,date);
-                int r  = stmt.executeUpdate();
-
-                if(r>0){
-                    returnValue  =true;
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        try {
+            myConn.close();
+        }catch (SQLException e){
+            e.printStackTrace();
         }
-        return  returnValue;
+        return  roomAvailabilities;
+
+
     }
+
+    public  static ArrayList<RoomAvailability> getStatedRoomAvailabilityForDate(Date date){
+        Connection myConn = DBConnection.getConnection();
+        String query = "SElECT * FROM ROOM_AVAILABILITY where ROOM_AVAILABILITY.date_ = ? ;";
+        ArrayList<RoomAvailability> roomAvailabilities  = new ArrayList<RoomAvailability>();
+
+        try{
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            stmt.setDate(1,date);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                RoomAvailability roomAvailability = new RoomAvailability(rs.getInt(1),rs.getDate(2));
+                roomAvailability.patient_count  = rs.getInt(3);
+                roomAvailability.availability = rs.getBoolean(4);
+                roomAvailabilities.add(roomAvailability);
+            }
+            stmt.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        try {
+            myConn.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return  roomAvailabilities;
+
+
+    }
+
+
+
 
 
 }
