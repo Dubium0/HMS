@@ -8,20 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
@@ -87,6 +74,21 @@ public class ShowRoom extends JPanel {
 		tempPanel.add(buttonPanel, BorderLayout.SOUTH);
 		
 		JButton addPersonnelButton = new JButton("Add Room");
+		addPersonnelButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String roomType = usernameField.getText();
+				int capacity =  Integer.parseInt(nameField.getText());
+				if (EntityController.addRoom(new Room(roomType,capacity))!= -1){
+					JOptionPane.showMessageDialog(new JFrame(), "New Room is created");
+					changePanel(parentFrame,new ShowRoom(parentFrame));
+				}else{
+					JOptionPane.showMessageDialog(new JFrame(), "Requirements is not met!!!");
+
+				}
+
+			}
+		});
 		addPersonnelButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		addPersonnelButton.setPreferredSize(new Dimension(300, 100));
 		buttonPanel.add(addPersonnelButton);
@@ -180,6 +182,11 @@ public class ShowRoom extends JPanel {
 		deleteRoomButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		deleteRoomButton.setPreferredSize(new Dimension(300, 100));
 		buttonPanel2.add(deleteRoomButton);
+
+		JButton refreshButton = new JButton("Refresh");
+		refreshButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		refreshButton.setPreferredSize(new Dimension(300, 100));
+		buttonPanel2.add(refreshButton);
 		
 		JButton cancelButton2 = new JButton("Cancel");
 		cancelButton2.addMouseListener(new MouseAdapter() {

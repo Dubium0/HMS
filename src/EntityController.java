@@ -58,7 +58,7 @@ public class EntityController {
         try {
             PreparedStatement stmt = myConn.prepareStatement(query,PreparedStatement.RETURN_GENERATED_KEYS);
             stmt.setString(1,room.roomType);
-            stmt.setInt(1,room.room_capacity);
+            stmt.setInt(2,room.room_capacity);
             int r = stmt.executeUpdate();
             if(r>0){
                 ResultSet rs= stmt.getGeneratedKeys();

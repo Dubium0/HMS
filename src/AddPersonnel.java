@@ -1,15 +1,7 @@
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.awt.GridLayout;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JPasswordField;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
 
 import java.awt.Font;
 import java.awt.event.ActionListener;
@@ -81,10 +73,10 @@ public class AddPersonnel extends JPanel {
 		genderText.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		centerPanel.add(genderText);
 		
-		JTextField genderField = new JTextField();
+		JComboBox<String> genderField = new JComboBox();
+		genderField.setModel(new DefaultComboBoxModel(new String[] {"Not Specified","Male","Female"}));
 		genderField.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		centerPanel.add(genderField);
-		genderField.setColumns(10);
 		
 		JLabel ageText = new JLabel("Age:");
 		ageText.setFont(new Font("Tahoma", Font.PLAIN, 30));
@@ -146,6 +138,38 @@ public class AddPersonnel extends JPanel {
 		add(buttonPanel, BorderLayout.SOUTH);
 		
 		JButton addPersonnelButton = new JButton("Add Personnel");
+		addPersonnelButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String userType = typeComboBox.getSelectedItem().toString();
+				String name_surname = nameField.getText() + " " + surnameField.getText();
+				int age = Integer.parseInt(ageField.getText());  // be careful
+				String username = usernameField.getText();
+				String gender = genderField.getSelectedItem().toString();
+				int password = Integer.parseInt(new String(passwordField.getPassword()));
+				if (userType.equals("Nurse")){
+					if(UserController.addNurse(new Nurse(name_surname,age,username,gender,password))!= -1){
+						JOptionPane.showMessageDialog(new JFrame(), "New Nurse is created");
+						changePanel(parentFrame, new AddPersonnel(parentFrame));
+					}else{
+						JOptionPane.showMessageDialog(new JFrame(), "Requirements is not met!!!");
+					}
+				}
+				else {
+					String department = departmentComboBox.getSelectedItem().toString();
+					String expertise = expertiseComboBox.getSelectedItem().toString();
+					if (UserController.addDoctor(new Doctor(name_surname,age,username,gender,1,password)) != -1){  // expertiseid
+						JOptionPane.showMessageDialog(new JFrame(), "New Doctor is created");
+						changePanel(parentFrame, new AddPersonnel(parentFrame));
+					}
+					else {
+						JOptionPane.showMessageDialog(new JFrame(), "Requirements is not met!!!");
+					}
+
+				}
+
+			}
+		});
 		addPersonnelButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		addPersonnelButton.setPreferredSize(new Dimension(300, 100));
 		buttonPanel.add(addPersonnelButton);

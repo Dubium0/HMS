@@ -39,7 +39,9 @@ public class DoctorController {
     }
 
     private  static  boolean updateAppointmentBooking(Appointment appointment, int booking_id){
-        
+        return true;
 
     }
+
+
 }
