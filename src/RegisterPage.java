@@ -19,14 +19,13 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.NumberFormatter;
+import javax.swing.text.*;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.SwingConstants;
 
 public class RegisterPage extends JFrame {
 
     private static final long serialVersionUID = 1L;
-
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -86,7 +85,7 @@ public class RegisterPage extends JFrame {
         JLabel passwordText = new JLabel("Password:");
         passwordText.setHorizontalAlignment(SwingConstants.LEFT);
         fieldsPanel.add(passwordText);
-        JTextField passwordField = new JPasswordField();
+        JPasswordField passwordField = new JPasswordField();
         fieldsPanel.add(passwordField);
         
         //name
@@ -105,20 +104,30 @@ public class RegisterPage extends JFrame {
         fieldsPanel.add(surnameField);
         
         //age
-        NumberFormatter formatter = new NumberFormatter(new DecimalFormat("#0"));
-        formatter.setValueClass(Integer.class);
-        formatter.setMinimum(0);
-        formatter.setMaximum(Integer.MAX_VALUE);
-        formatter.setAllowsInvalid(false);
 
-        
+        class IntegerDocumentFilter extends DocumentFilter {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+                if (string.matches("\\d+")) {
+                    super.insertString(fb, offset, string, attr);
+                }
+            }
+
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+                if (text.matches("\\d+")) {
+                    super.replace(fb, offset, length, text, attrs);
+                }
+            }
+        }
+
         JLabel ageText = new JLabel("Age:");
         ageText.setHorizontalAlignment(SwingConstants.LEFT);
         fieldsPanel.add(ageText);
-        JFormattedTextField ageField = new JFormattedTextField(formatter);
+        JTextField ageField = new JTextField();
+        ((AbstractDocument) ageField.getDocument()).setDocumentFilter(new IntegerDocumentFilter());
         fieldsPanel.add(ageField);
-        ageField.setValue(null);
-        
+
         
         
         //gender
@@ -137,9 +146,26 @@ public class RegisterPage extends JFrame {
         JButton registerButton = new JButton("Register");
         JButton cancelButton = new JButton("Cancel");
 
-        registerButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                
+        registerButton.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                String username = usernameField.getText();
+                String password = new String(passwordField.getPassword());
+                String name = nameField.getText();
+                String surname = surnameField.getText();
+                String gender  = genderField.getSelectedItem().toString();
+                String name_surname = name + " "+ surname;
+                int age = 0;
+                try{
+                    age = Integer.parseInt(ageField.getText());
+                }catch (Exception e1){
+                }
+
+
+                if (RegisterController.register(name_surname,username,age,password,gender)){
+                    dispose();
+                    new LoginPage();
+                }
+
             }
 
         });

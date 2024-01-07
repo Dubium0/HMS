@@ -6,7 +6,7 @@ public class Nurse extends  User{
             int age,
             String user_name,
             String gender,
-            int password){
+            String password){
 
         this.name_surname = name_surname;
         this.age =age;

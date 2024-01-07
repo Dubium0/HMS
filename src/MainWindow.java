@@ -29,7 +29,7 @@ public class MainWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainWindow window = new MainWindow(2);
+					MainWindow window = new MainWindow(1);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -65,7 +65,7 @@ public class MainWindow {
         menuPanel.add(menuTextPanel1);
         menuTextPanel1.setLayout(new GridLayout(1, 0, 0, 0));
         
-        JLabel helloText = new JLabel("Hello 0");
+        JLabel helloText = new JLabel("Hello " + UserController.getUser(userId).user_name);
         helloText.setPreferredSize(new Dimension(0, 50));
         helloText.setHorizontalAlignment(SwingConstants.CENTER);
         helloText.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -150,18 +150,20 @@ public class MainWindow {
 	}
 	
 	private void goHomePage() {
-		if (userId == 1) {
+		int userType = LoginController.getAccountType(userId);
+		System.out.println(userType);
+		if (userType == LoginController.PATIENT) {
 			changePanel(frame,new PatientMainPage(frame));
 			
 		}
-		else if (userId == 2) {
-			changePanel(frame,new AdminMainPage(frame));
+		else if (userType == LoginController.ADMIN) {
+			changePanel(frame,new AdminMainPage(frame,userId));
 		}
-		else if (userId == 3) {
-			changePanel(frame,new DoctorMainPage(frame));
+		else if (userType == LoginController.DOCTOR) {
+			changePanel(frame,new DoctorMainPage(frame,userId));
 		}
-		else {
-			changePanel(frame,new NurseMainPage(frame));
+		else if (userType == LoginController.NURSE) {
+			changePanel(frame,new NurseMainPage(frame,userId));
 		}
 		
 	}

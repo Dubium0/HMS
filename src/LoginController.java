@@ -1,3 +1,5 @@
+import com.mysql.cj.log.Log;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -6,65 +8,63 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class LoginController {
-    private Connection connection;
-    private PreparedStatement preparedStatement;
-    private ResultSet resultSet;
-    private boolean isLoggedIn;
+    public static final int PATIENT = 0;
+    public static final int DOCTOR = 1;
+    public static final int NURSE = 2;
+    public static final int ADMIN = 3;
 
-    public LoginController(Connection connection) {
-        this.connection = connection;
-    }
 
-    public boolean login(String username, String password) {
+    public static int login(String username, String password) {
+        Connection connection = DBConnection.getConnection();
         try {
-            preparedStatement = connection.prepareStatement(
+            PreparedStatement preparedStatement = connection.prepareStatement(
                     "(SELECT * FROM user WHERE user_name = ?)");
             preparedStatement.setString(1, username);
-            resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                if (!password.equals(resultSet.getString("password"))) {
+                if (!password.equals(resultSet.getString("password_"))) {
                     JOptionPane.showMessageDialog(new JFrame(), "Password is incorrect!");
-                    return false;
+                    return -1;
                 } else {
-                    this.isLoggedIn = true;
-                    return true;
+                    return resultSet.getInt("userId");
                 }
             } else {
                 JOptionPane.showMessageDialog(new JFrame(), "User does not exist!");
-                return false;
+                return -1;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return -1;
         }
     }
 
 
-    public int getAccountType(int userId) {
+    public static int getAccountType(int userId) {
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM Patient WHERE patientId = ?");
+            Connection connection = DBConnection.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Patient WHERE patientId = ?");
             preparedStatement.setInt(1, userId);
-            resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return RegisterController.PATIENT;
+                return LoginController.PATIENT;
             }
             preparedStatement = connection.prepareStatement("SELECT * FROM doctor WHERE doctorId = ?");
             preparedStatement.setInt(1, userId);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return RegisterController.DOCTOR;
+                return LoginController.DOCTOR;
             }
             preparedStatement = connection.prepareStatement("SELECT * FROM nurse WHERE nurseId = ?");
             preparedStatement.setInt(1, userId);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return RegisterController.NURSE;
+                return LoginController.NURSE;
             }
             preparedStatement = connection.prepareStatement("SELECT * FROM admin WHERE adminId = ?");
             preparedStatement.setInt(1, userId);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return RegisterController.NURSE;
+                return LoginController.ADMIN;
             }
             return -1;
 

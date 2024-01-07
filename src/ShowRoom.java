@@ -7,19 +7,27 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 
 public class ShowRoom extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JFrame parentFrame;
+	private int userId;
 	/**
 	 * Create the panel.
 	 */
-	public ShowRoom(JFrame frame) {
+	public ShowRoom(JFrame frame, int userId) {
+		this.parentFrame = frame;
+		this.userId = userId;
 		this.parentFrame = frame;
 		this.setLayout(new BorderLayout(0, 0));
 		
@@ -47,8 +55,25 @@ public class ShowRoom extends JPanel {
 		JLabel nameText = new JLabel("Capacity:");
 		nameText.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		centerPanel.add(nameText);
-		
+
+
+		class IntegerDocumentFilter extends DocumentFilter {
+			@Override
+			public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+				if (string.matches("\\d+")) {
+					super.insertString(fb, offset, string, attr);
+				}
+			}
+
+			@Override
+			public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+				if (text.matches("\\d+")) {
+					super.replace(fb, offset, length, text, attrs);
+				}
+			}
+		}
 		JTextField nameField = new JTextField();
+		((AbstractDocument) nameField.getDocument()).setDocumentFilter(new IntegerDocumentFilter());
 		nameField.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		centerPanel.add(nameField);
 		nameField.setColumns(5);
@@ -78,14 +103,23 @@ public class ShowRoom extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				String roomType = usernameField.getText();
-				int capacity =  Integer.parseInt(nameField.getText());
-				if (EntityController.addRoom(new Room(roomType,capacity))!= -1){
-					JOptionPane.showMessageDialog(new JFrame(), "New Room is created");
-					changePanel(parentFrame,new ShowRoom(parentFrame));
-				}else{
-					JOptionPane.showMessageDialog(new JFrame(), "Requirements is not met!!!");
-
+				int capacity = 0;
+				try{
+					capacity = Integer.parseInt(nameField.getText());
+				}catch (Exception e1){
 				}
+				if (capacity == 0){
+					JOptionPane.showMessageDialog(new JFrame(), "Capacity is invalid!");
+				}else {
+					if (EntityController.addRoom(new Room(roomType,capacity))!= -1){
+						JOptionPane.showMessageDialog(new JFrame(), "New Room is created");
+						changePanel(parentFrame,new ShowRoom(parentFrame,userId));
+					}else{
+						JOptionPane.showMessageDialog(new JFrame(), "Requirements is not met!!!");
+
+					}
+				}
+
 
 			}
 		});
@@ -97,7 +131,7 @@ public class ShowRoom extends JPanel {
 		cancelButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				changePanel(parentFrame,new AdminMainPage(parentFrame));
+				changePanel(parentFrame,new AdminMainPage(parentFrame,userId));
 			}
 		});
 		cancelButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
@@ -142,6 +176,8 @@ public class ShowRoom extends JPanel {
             model2.addColumn(colName);
         }
 
+		refreshRoomTable(model2);
+
         
         JTable table2 = new JTable(model2);
         table2.setFocusable(false);
@@ -184,6 +220,12 @@ public class ShowRoom extends JPanel {
 		buttonPanel2.add(deleteRoomButton);
 
 		JButton refreshButton = new JButton("Refresh");
+		refreshButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				refreshRoomTable(model2);
+			}
+		});
 		refreshButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		refreshButton.setPreferredSize(new Dimension(300, 100));
 		buttonPanel2.add(refreshButton);
@@ -192,7 +234,7 @@ public class ShowRoom extends JPanel {
 		cancelButton2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				changePanel(parentFrame,new AdminMainPage(parentFrame));
+				changePanel(parentFrame,new AdminMainPage(parentFrame,userId));
 			}
 		});
 		cancelButton2.setFont(new Font("Tahoma", Font.PLAIN, 30));
@@ -209,6 +251,15 @@ public class ShowRoom extends JPanel {
 		frame.getContentPane().add(newPanel, BorderLayout.CENTER);
 		frame.getContentPane().repaint();
 		frame.getContentPane().revalidate();
+	}
+	private void refreshRoomTable(DefaultTableModel model) {
+		model.setRowCount(0);
+		ArrayList<Room> roomArrayList = EntityController.getRooms();
+		for (Room room : roomArrayList) {
+			Object[] rowData = {room.room_id, room.roomType, room.room_capacity};
+			model.addRow(rowData);
+
+		}
 	}
 
 }

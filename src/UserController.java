@@ -19,7 +19,7 @@ public class UserController {
                 int age = rs.getInt("age");
                 String user_name = rs.getString("user_name");
                 String gender =rs.getString("gender");
-                int password = rs.getInt("password_");
+                String password = rs.getString("password_");
                 Patient  patient=  new Patient(name_surname,age,user_name,gender,password );
                 patient.user_id = user_id;
                 patients.add(patient);
@@ -45,7 +45,7 @@ public class UserController {
             int age = rs.getInt("age");
             String user_name = rs.getString("user_name");
             String gender =rs.getString("gender");
-            int password = rs.getInt("password_");
+            String password = rs.getString("password_");
             patient = new Patient(name_surname,age,user_name,gender,password );
             patient.user_id = user_id;
 
@@ -69,7 +69,7 @@ public class UserController {
             int age = rs.getInt("age");
             String user_name_ = rs.getString("user_name");
             String gender =rs.getString("gender");
-            int password = rs.getInt("password_");
+            String password = rs.getString("password_");;
             patient = new Patient(name_surname,age,user_name_,gender,password);
             patient.user_id = user_id;
 
@@ -89,7 +89,7 @@ public class UserController {
             stmt.setString(1,patient.name_surname);
             stmt.setString(2,patient.user_name);
             stmt.setInt(3,patient.age);
-            stmt.setInt(4,patient.password);
+            stmt.setString(4,patient.password);
             stmt.setString(5,patient.gender);
             int r = stmt.executeUpdate();
             if(r >0){
@@ -136,7 +136,7 @@ public class UserController {
                 int age = rs.getInt("age");
                 String user_name = rs.getString("user_name");
                 String gender =rs.getString("gender");
-                int password = rs.getInt("password_");
+                String password = rs.getString("password_");
                 Nurse  nurse=  new Nurse(name_surname,age,user_name,gender,password );
                 nurse.user_id = user_id;
                 nurses.add(nurse);
@@ -162,7 +162,7 @@ public class UserController {
             int age = rs.getInt("age");
             String user_name = rs.getString("user_name");
             String gender =rs.getString("gender");
-            int password = rs.getInt("password_");
+            String password = rs.getString("password_");
             nurse = new Nurse(name_surname,age,user_name,gender,password );
             nurse.user_id = user_id;
 
@@ -186,7 +186,7 @@ public class UserController {
             int age = rs.getInt("age");
             String user_name_ = rs.getString("user_name");
             String gender =rs.getString("gender");
-            int password = rs.getInt("password_");
+            String password = rs.getString("password_");
             nurse = new Nurse(name_surname,age,user_name_,gender,password);
             nurse.user_id = user_id;
 
@@ -206,7 +206,7 @@ public class UserController {
             stmt.setString(1,nurse.name_surname);
             stmt.setString(2,nurse.user_name);
             stmt.setInt(3,nurse.age);
-            stmt.setInt(4,nurse.password);
+            stmt.setString(4,nurse.password);
             stmt.setString(5,nurse.gender);
             int r = stmt.executeUpdate();
             if(r >0){
@@ -253,7 +253,7 @@ public class UserController {
                 int age = rs.getInt("age");
                 String user_name = rs.getString("user_name");
                 String gender =rs.getString("gender");
-                int password = rs.getInt("password_");
+                String password = rs.getString("password_");
                 Admin  admin=  new Admin(name_surname,age,user_name,gender,password );
                 admin.user_id = user_id;
                 admins.add(admin);
@@ -279,7 +279,7 @@ public class UserController {
             int age = rs.getInt("age");
             String user_name = rs.getString("user_name");
             String gender =rs.getString("gender");
-            int password = rs.getInt("password_");
+            String password = rs.getString("password_");
             admin = new Admin(name_surname,age,user_name,gender,password );
             admin.user_id = user_id;
 
@@ -303,7 +303,7 @@ public class UserController {
             int age = rs.getInt("age");
             String user_name_ = rs.getString("user_name");
             String gender =rs.getString("gender");
-            int password = rs.getInt("password_");
+            String password = rs.getString("password_");
             admin = new Admin(name_surname,age,user_name_,gender,password);
             admin.user_id = user_id;
 
@@ -323,7 +323,7 @@ public class UserController {
             stmt.setString(1,admin.name_surname);
             stmt.setString(2,admin.user_name);
             stmt.setInt(3,admin.age);
-            stmt.setInt(4,admin.password);
+            stmt.setString(4,admin.password);
             stmt.setString(5,admin.gender);
             int r = stmt.executeUpdate();
             if(r >0){
@@ -371,7 +371,7 @@ public class UserController {
                 int expertise_id = rs.getInt("expertiseID");
                 String user_name = rs.getString("user_name");
                 String gender =rs.getString("gender");
-                int password = rs.getInt("password_");
+                String password = rs.getString("password_");
                 Doctor  doctor=  new Doctor(name_surname,age,user_name,gender,expertise_id,password );
                 doctor.user_id = user_id;
                 doctors.add(doctor);
@@ -398,7 +398,7 @@ public class UserController {
             String user_name = rs.getString("user_name");
             String gender =rs.getString("gender");
             int expertise_id = rs.getInt("expertiseID");
-            int password = rs.getInt("password_");
+            String password = rs.getString("password_");
             doctor = new Doctor(name_surname,age,user_name,gender, expertise_id,password );
             doctor.user_id = user_id;
 
@@ -423,7 +423,7 @@ public class UserController {
             String user_name_ = rs.getString("user_name");
             String gender =rs.getString("gender");
             int expertise_id = rs.getInt("expertiseID");
-            int password = rs.getInt("password_");
+            String password = rs.getString("password_");
             doctor = new Doctor(name_surname,age,user_name,gender, expertise_id,password );
             doctor.user_id = user_id;
 
@@ -443,7 +443,7 @@ public class UserController {
             stmt.setString(1,doctor.name_surname);
             stmt.setString(2,doctor.user_name);
             stmt.setInt(3,doctor.age);
-            stmt.setInt(4,doctor.password);
+            stmt.setString(4,doctor.password);
             stmt.setString(5,doctor.gender);
             int r = stmt.executeUpdate();
             if(r >0){
@@ -460,7 +460,7 @@ public class UserController {
 
         }
         if(user_id > -1){
-            String query_2 = "INSERT INTO DOCTOR (adminID,expertiseID) VALUES ( ? , ? )";
+            String query_2 = "INSERT INTO DOCTOR (doctorId,expertiseID) VALUES ( ? , ? )";
             try {
                 PreparedStatement stmt = myConn.prepareStatement(query_2);
                 stmt.setInt(1,user_id);
@@ -473,6 +473,27 @@ public class UserController {
             }
         }
         return user_id;
+    }
+
+    public static User getUser(int userId){
+        Connection myConn = DBConnection.getConnection();
+        int userType = LoginController.getAccountType(userId);
+        String query = "SELECT * FROM user where  user.userId = ?";
+        User user = null;
+        if (userType == LoginController.PATIENT){
+            user = UserController.getPatient(userId);
+        }
+        else if (userType == LoginController.DOCTOR){
+            user = UserController.getDoctor(userId);
+        }
+        else if (userType == LoginController.NURSE){
+            user = UserController.getNurse(userId);
+        }
+        else if (userType == LoginController.ADMIN){
+            user = UserController.getAdmin(userId);
+        }
+
+        return  user;
     }
 
 

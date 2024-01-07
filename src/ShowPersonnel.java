@@ -20,12 +20,13 @@ public class ShowPersonnel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JFrame parentFrame;
-
+	private int userId;
 	/**
 	 * Create the panel.
 	 */
-	public ShowPersonnel(JFrame frame) {
+	public ShowPersonnel(JFrame frame, int userId) {
 		this.parentFrame = frame;
+		this.userId = userId;
 		this.setLayout(new BorderLayout(0, 0));
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -110,7 +111,7 @@ public class ShowPersonnel extends JPanel {
 		refreshButton1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				refreshNurseTable(model1);
+				refreshDoctorTable(model1);
 			}
 		});
 		refreshButton1.setFont(new Font("Tahoma", Font.PLAIN, 30));
@@ -121,7 +122,7 @@ public class ShowPersonnel extends JPanel {
 		cancelButton1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				changePanel(parentFrame,new AdminMainPage(parentFrame));
+				changePanel(parentFrame,new AdminMainPage(parentFrame,userId));
 			}
 		});
 		cancelButton1.setFont(new Font("Tahoma", Font.PLAIN, 30));
@@ -219,7 +220,7 @@ public class ShowPersonnel extends JPanel {
 		cancelButton2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				changePanel(parentFrame,new AdminMainPage(parentFrame));
+				changePanel(parentFrame,new AdminMainPage(parentFrame,userId));
 			}
 		});
 		cancelButton2.setFont(new Font("Tahoma", Font.PLAIN, 30));
@@ -241,7 +242,9 @@ public class ShowPersonnel extends JPanel {
 		model.setRowCount(0);
 		ArrayList<Doctor> doctorArrayList = UserController.getDoctors();
 		for (Doctor doctor : doctorArrayList) {
-			Object[] rowData = {doctor.user_id, doctor.user_name, doctor.password, doctor.name_surname,doctor.age,doctor.gender};
+			Expertise expertise = EntityController.getExpertiseByID(doctor.expertise_id);
+			Department department = EntityController.getDepartmentByID(expertise.department_id);
+			Object[] rowData = {doctor.user_id, doctor.user_name, doctor.password, doctor.name_surname,doctor.age,doctor.gender,expertise.name,department.name};
 			model.addRow(rowData);
 
 		}

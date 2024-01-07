@@ -4,20 +4,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class AccountValidator {
-    private Connection connection;
-    private PreparedStatement preparedStatement;
-    private ResultSet resultSet;
 
-    public AccountValidator(Connection connection) {
-        this.connection = connection;
-    }
 
-    public boolean validateUsername(String username) {
+
+    public static boolean validateUsername(String username) {
+        Connection connection = DBConnection.getConnection();
         try {
-            preparedStatement = connection.prepareStatement(
+            PreparedStatement preparedStatement = connection.prepareStatement(
                     "(SELECT * FROM user WHERE user_name = ?) ");
             preparedStatement.setString(1, username);
-            resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return false;
             } else {
@@ -29,7 +25,8 @@ public class AccountValidator {
         }
     }
 
-    public boolean validatePassword(String password) {
+    public static boolean validatePassword(String password) {
         return password.length() >= 6;
     }
+    public static boolean validateAge(int age){return age >0;}
 }

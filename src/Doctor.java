@@ -8,7 +8,7 @@ public class Doctor extends  User{
             String user_name,
             String gender,
             int expertise_id,
-            int password){
+            String password){
 
         this.name_surname = name_surname;
         this.age =age;

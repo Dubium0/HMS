@@ -13,11 +13,14 @@ import java.awt.Font;
 public class DoctorMainPage extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-
+	private int userId;
+	private JFrame parentFrame;
 	/**
 	 * Create the panel.
 	 */
-	public DoctorMainPage(JFrame frame) {
+	public DoctorMainPage(JFrame frame,int userId) {
+		this.parentFrame = frame;
+		this.userId = userId;
 		setBackground(Color.GRAY);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 200, 200, 0};

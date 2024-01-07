@@ -123,24 +123,15 @@ public class LoginPage extends JFrame{
         btnNewButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {	
-            	String userType = usernameField.getText();
-            	System.out.println(userType);
-            	if (userType.equals("1")) {
-                	frmLoginpage.dispose();
-            		new MainWindow(1);
-            	}
-            	else if (userType.equals("2")) {
-                	frmLoginpage.dispose();
-            		new MainWindow(2);
-            	}
-            	else if (userType.equals("3")) {
-                	frmLoginpage.dispose();
-            		new MainWindow(3);
-            	}
-            	else {
-                	frmLoginpage.dispose();
-                	new MainWindow(4);
-            	}
+            	String username = usernameField.getText();
+                String password = new String(passwordField.getPassword());
+                int userId = LoginController.login(username,password);
+                if (userId != -1){
+                    frmLoginpage.dispose();
+                    new MainWindow(userId);
+                }
+
+
             }
 
 

@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -16,11 +17,13 @@ public class ShowSpecialty extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JFrame parentFrame;
+	private int userId;
 	/**
 	 * Create the panel.
 	 */
-	public ShowSpecialty(JFrame frame) {
+	public ShowSpecialty(JFrame frame,int userId) {
 		this.parentFrame = frame;
+		this.userId = userId;
 		this.setLayout(new BorderLayout(0, 0));
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -80,7 +83,7 @@ public class ShowSpecialty extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				String departmentName = departmentField.getText();
 				if (EntityController.addDepartment(new Department(departmentName)) != -1){
-					changePanel(parentFrame,new ShowSpecialty(parentFrame));
+					changePanel(parentFrame,new ShowSpecialty(parentFrame,userId));
 					JOptionPane.showMessageDialog(new JFrame(), "New Department is created");
 				}
 				else {
@@ -98,7 +101,7 @@ public class ShowSpecialty extends JPanel {
 		cancelButton1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				changePanel(parentFrame,new AdminMainPage(parentFrame));
+				changePanel(parentFrame,new AdminMainPage(parentFrame,userId));
 			}
 		});
 		cancelButton1.setFont(new Font("Tahoma", Font.PLAIN, 30));
@@ -141,7 +144,7 @@ public class ShowSpecialty extends JPanel {
         for (String colName: col1){
             model1.addColumn(colName);
         }
-
+		refreshDepartmentTable(model1);
         
         JTable departmentTable = new JTable(model1);
         departmentTable.setFocusable(false);
@@ -185,6 +188,12 @@ public class ShowSpecialty extends JPanel {
 		buttonPanel2.add(deleteDepartmentButton);
 
 		JButton refreshButton1 = new JButton("Refresh");
+		refreshButton1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				refreshDepartmentTable(model1);
+			}
+		});
 		refreshButton1.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		refreshButton1.setPreferredSize(new Dimension(300, 100));
 		buttonPanel2.add(refreshButton1);
@@ -193,7 +202,7 @@ public class ShowSpecialty extends JPanel {
 		cancelButton2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				changePanel(parentFrame,new AdminMainPage(parentFrame));
+				changePanel(parentFrame,new AdminMainPage(parentFrame,userId));
 			}
 		});
 		cancelButton2.setFont(new Font("Tahoma", Font.PLAIN, 30));
@@ -243,10 +252,21 @@ public class ShowSpecialty extends JPanel {
 		centerPanel2.add(text2);
 		
 		JComboBox<String> departmentComboBox = new JComboBox();
+
+		ArrayList<String> departmentList = new ArrayList<>();
+		for (Department department : EntityController.getDepartments()){
+			departmentList.add(department.name);
+		}
+		departmentComboBox.setModel(new DefaultComboBoxModel(departmentList.toArray()));
+
 		departmentComboBox.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				departmentComboBox.setModel(new DefaultComboBoxModel(new String[] {"A","B"}));
+				ArrayList<String> departmentList = new ArrayList<>();
+				for (Department department : EntityController.getDepartments()){
+					departmentList.add(department.name);
+				}
+				departmentComboBox.setModel(new DefaultComboBoxModel(departmentList.toArray()));
 			}
 		});
 		departmentComboBox.setFont(new Font("Tahoma", Font.PLAIN, 30));
@@ -278,7 +298,13 @@ public class ShowSpecialty extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				String expertiseName = field1.getText();
 				String depName = departmentComboBox.getSelectedItem().toString();
-				//EntityController.addExpertise(new Expertise(EntityController.getDepartment().department_id, expertiseName));
+				if (EntityController.addExpertise(new Expertise(EntityController.getDepartmentByName(depName).department_id, expertiseName))!= -1){
+					JOptionPane.showMessageDialog(new JFrame(), "New Expertise is added");
+					changePanel(parentFrame,new ShowSpecialty(parentFrame,userId));
+				}else {
+					JOptionPane.showMessageDialog(new JFrame(), "Requirements is not met!!!");
+				}
+
 			}
 		});
 		addPersonnelButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
@@ -289,7 +315,7 @@ public class ShowSpecialty extends JPanel {
 		cancelButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				changePanel(parentFrame,new AdminMainPage(parentFrame));
+				changePanel(parentFrame,new AdminMainPage(parentFrame,userId));
 			}
 		});
 		cancelButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
@@ -333,6 +359,8 @@ public class ShowSpecialty extends JPanel {
         for (String colName: col2){
             model2.addColumn(colName);
         }
+
+		refreshExpertiseTable(model2);
 
         
         JTable table2 = new JTable(model2);
@@ -384,6 +412,12 @@ public class ShowSpecialty extends JPanel {
 
 
 		JButton refreshButton2 = new JButton("Refresh");
+		refreshButton2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				refreshExpertiseTable(model2);
+			}
+		});
 		refreshButton2.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		refreshButton2.setPreferredSize(new Dimension(300, 100));
 		buttonPanel4.add(refreshButton2);
@@ -392,7 +426,7 @@ public class ShowSpecialty extends JPanel {
 		cancelButton4.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				changePanel(parentFrame,new AdminMainPage(parentFrame));
+				changePanel(parentFrame,new AdminMainPage(parentFrame,userId));
 			}
 		});
 		cancelButton4.setFont(new Font("Tahoma", Font.PLAIN, 30));
@@ -407,6 +441,26 @@ public class ShowSpecialty extends JPanel {
 		frame.getContentPane().add(newPanel, BorderLayout.CENTER);
 		frame.getContentPane().repaint();
 		frame.getContentPane().revalidate();
+	}
+
+	private void refreshDepartmentTable(DefaultTableModel model) {
+		model.setRowCount(0);
+		ArrayList<Department> departmentArrayList = EntityController.getDepartments();
+		for (Department department : departmentArrayList) {
+			Object[] rowData = {department.department_id, department.name};
+			model.addRow(rowData);
+
+		}
+	}
+
+	private void refreshExpertiseTable(DefaultTableModel model) {
+		model.setRowCount(0);
+		ArrayList<Expertise> expertiseArrayList = EntityController.getExpertises();
+		for (Expertise expertise: expertiseArrayList) {
+			Object[] rowData = {expertise.expertise_id, expertise.name, EntityController.getDepartmentByID(expertise.department_id).name};
+			model.addRow(rowData);
+
+		}
 	}
 
 }

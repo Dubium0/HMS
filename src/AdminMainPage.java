@@ -21,11 +21,13 @@ public class AdminMainPage extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JFrame parentFrame;
+	private int userId;
 
 	/**
 	 * Create the panel.
 	 */
-	public AdminMainPage(JFrame frame) {
+	public AdminMainPage(JFrame frame, int userId) {
+		this.userId = userId;
 		this.parentFrame = frame;
 		setBackground(Color.GRAY);
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -39,7 +41,7 @@ public class AdminMainPage extends JPanel {
 		addPersonnelButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				changePanel(parentFrame,new AddPersonnel(parentFrame));
+				changePanel(parentFrame,new AddPersonnel(parentFrame,userId));
 			}
 		});
 		addPersonnelButton.setFont(new Font("Tahoma", Font.PLAIN, 35));
@@ -55,7 +57,7 @@ public class AdminMainPage extends JPanel {
 		showPersonnelButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				changePanel(parentFrame,new ShowPersonnel(parentFrame));
+				changePanel(parentFrame,new ShowPersonnel(parentFrame,userId));
 			}
 		});
 		showPersonnelButton.setFont(new Font("Tahoma", Font.PLAIN, 35));
@@ -72,7 +74,7 @@ public class AdminMainPage extends JPanel {
 		addRoomButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				changePanel(parentFrame,new ShowRoom(parentFrame));
+				changePanel(parentFrame,new ShowRoom(parentFrame,userId));
 			}
 		});
 		addRoomButton.setFont(new Font("Tahoma", Font.PLAIN, 35));
@@ -89,7 +91,7 @@ public class AdminMainPage extends JPanel {
 		addExpertiseButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				changePanel(parentFrame,new ShowSpecialty(parentFrame));
+				changePanel(parentFrame,new ShowSpecialty(parentFrame,userId));
 			}
 		});
 		addExpertiseButton.setFont(new Font("Tahoma", Font.PLAIN, 35));

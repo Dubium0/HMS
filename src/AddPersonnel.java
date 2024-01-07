@@ -1,4 +1,8 @@
 import javax.swing.*;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 import java.awt.GridLayout;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -8,16 +12,19 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
 public class AddPersonnel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JFrame parentFrame;
+	private int userId;
 	/**
 	 * Create the panel.
 	 */
-	public AddPersonnel(JFrame frame) {
+	public AddPersonnel(JFrame frame,int userId) {
 		this.parentFrame = frame;
+		this.userId = userId;
 		setLayout(new BorderLayout(0, 0));
 		
 		JPanel centerPanel = new JPanel();
@@ -77,54 +84,70 @@ public class AddPersonnel extends JPanel {
 		genderField.setModel(new DefaultComboBoxModel(new String[] {"Not Specified","Male","Female"}));
 		genderField.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		centerPanel.add(genderField);
-		
+
 		JLabel ageText = new JLabel("Age:");
 		ageText.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		centerPanel.add(ageText);
-		
+
+
+		class IntegerDocumentFilter extends DocumentFilter {
+			@Override
+			public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+				if (string.matches("\\d+")) {
+					super.insertString(fb, offset, string, attr);
+				}
+			}
+
+			@Override
+			public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+				if (text.matches("\\d+")) {
+					super.replace(fb, offset, length, text, attrs);
+				}
+			}
+		}
 		JTextField ageField = new JTextField();
 		ageField.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		((AbstractDocument) ageField.getDocument()).setDocumentFilter(new IntegerDocumentFilter());
 		centerPanel.add(ageField);
 		ageField.setColumns(10);
 		
 		
 		
 		//not visible for nurse add
-		JLabel departmentText = new JLabel("Department");
-		departmentText.setFont(new Font("Tahoma", Font.PLAIN, 30));
-		centerPanel.add(departmentText);
-		
-		JComboBox departmentComboBox = new JComboBox();
-		departmentComboBox.setFont(new Font("Tahoma", Font.PLAIN, 30));
-		centerPanel.add(departmentComboBox);
-		
+
+
+
+
+
+		ArrayList<Expertise> expertiseArrayList = EntityController.getExpertises();
+		ArrayList<String> expertiseNames = new ArrayList<>();
+		for (Expertise expertise: expertiseArrayList){
+			expertiseNames.add(expertise.name);
+
+		}
+
+
 		JLabel expertiseText = new JLabel("Expertise");
 		expertiseText.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		centerPanel.add(expertiseText);
-		
-		
+
+
 			
 		JComboBox<String> expertiseComboBox = new JComboBox<>();
 		expertiseComboBox.setFont(new Font("Tahoma", Font.PLAIN, 30));
-		expertiseComboBox.setModel(new DefaultComboBoxModel(new String[] {null,"A","B","C","D"}));
+		expertiseComboBox.setModel(new DefaultComboBoxModel(expertiseNames.toArray()));
 		centerPanel.add(expertiseComboBox);
-		
-		departmentText.setVisible(false);
-		departmentComboBox.setVisible(false);
+
 		expertiseText.setVisible(false);
 		expertiseComboBox.setVisible(false);
 		
 		typeComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (typeComboBox.getSelectedItem().equals("Nurse")) {
-					departmentText.setVisible(false);
-					departmentComboBox.setVisible(false);
 					expertiseText.setVisible(false);
 					expertiseComboBox.setVisible(false);
 				}
 				else if (typeComboBox.getSelectedItem().equals("Doctor")){
-					departmentText.setVisible(true);
-					departmentComboBox.setVisible(true);
 					expertiseText.setVisible(true);
 					expertiseComboBox.setVisible(true);
 				}
@@ -141,36 +164,55 @@ public class AddPersonnel extends JPanel {
 		addPersonnelButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				String userType = typeComboBox.getSelectedItem().toString();
-				String name_surname = nameField.getText() + " " + surnameField.getText();
-				int age = Integer.parseInt(ageField.getText());  // be careful
+				String personnelType = typeComboBox.getSelectedItem().toString();
 				String username = usernameField.getText();
+				String password = new String(passwordField.getPassword());
+				String name = nameField.getText();
+				String surname = surnameField.getText();
 				String gender = genderField.getSelectedItem().toString();
-				int password = Integer.parseInt(new String(passwordField.getPassword()));
-				if (userType.equals("Nurse")){
-					if(UserController.addNurse(new Nurse(name_surname,age,username,gender,password))!= -1){
-						JOptionPane.showMessageDialog(new JFrame(), "New Nurse is created");
-						changePanel(parentFrame, new AddPersonnel(parentFrame));
-					}else{
-						JOptionPane.showMessageDialog(new JFrame(), "Requirements is not met!!!");
-					}
+				int age = 0;
+				try{
+					age = Integer.parseInt(ageField.getText());
+				}catch (Exception e1){
 				}
-				else {
-					String department = departmentComboBox.getSelectedItem().toString();
-					String expertise = expertiseComboBox.getSelectedItem().toString();
-					if (UserController.addDoctor(new Doctor(name_surname,age,username,gender,1,password)) != -1){  // expertiseid
-						JOptionPane.showMessageDialog(new JFrame(), "New Doctor is created");
-						changePanel(parentFrame, new AddPersonnel(parentFrame));
+				if (!AccountValidator.validateUsername(username)){
+					JOptionPane.showMessageDialog(new JFrame(), "Username already exists!");
+				}
+				else if (!AccountValidator.validatePassword(password)){
+					JOptionPane.showMessageDialog(new JFrame(), "Password must be at least 6 characters!");
+				}
+				else if(!AccountValidator.validateAge(age)){
+					JOptionPane.showMessageDialog(new JFrame(), "Invalid age!");
+				}else {
+					if (personnelType.equals("Nurse")){
+						if (UserController.addNurse(new Nurse((name + " " + surname),age,username,gender,password))!= -1){
+							JOptionPane.showMessageDialog(new JFrame(), "Nurse account is added");
+							changePanel(parentFrame,new AddPersonnel(parentFrame,userId));
+
+						}
+						else {
+							JOptionPane.showMessageDialog(new JFrame(), "Requirements is not met");
+						}
 					}
 					else {
-						JOptionPane.showMessageDialog(new JFrame(), "Requirements is not met!!!");
+						String expertiseName = expertiseComboBox.getSelectedItem().toString();
+						int expertiseId = EntityController.getExpertiseByName(expertiseName).expertise_id;
+						if (UserController.addDoctor(new Doctor((name + " " + surname),age,username,gender,expertiseId,password))!= -1){
+							JOptionPane.showMessageDialog(new JFrame(), "Doctor account is added");
+							changePanel(parentFrame,new AddPersonnel(parentFrame,userId));
+
+						}else {
+							JOptionPane.showMessageDialog(new JFrame(), "Requirements is not met");
+						}
 					}
+
 
 				}
 
 			}
 		});
 		addPersonnelButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
+
 		addPersonnelButton.setPreferredSize(new Dimension(300, 100));
 		buttonPanel.add(addPersonnelButton);
 		
@@ -178,7 +220,7 @@ public class AddPersonnel extends JPanel {
 		cancelButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				changePanel(parentFrame,new AdminMainPage(parentFrame));
+				changePanel(parentFrame,new AdminMainPage(parentFrame,userId));
 			}
 		});
 		cancelButton.setFont(new Font("Tahoma", Font.PLAIN, 30));

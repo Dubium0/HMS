@@ -4,7 +4,7 @@ public  class User {
     public  String name_surname;
     public  int age;
     public  String user_name;
-    public  int password;
+    public  String password;
     public  int user_id;
     public  String gender;
 

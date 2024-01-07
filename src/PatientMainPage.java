@@ -16,11 +16,14 @@ import javax.swing.JFrame;
 public class PatientMainPage extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-
+	private int userId;
+	private JFrame parentFrame;
 	/**
 	 * Create the panel.
 	 */
 	public PatientMainPage(JFrame frame) {
+		this.parentFrame = frame;
+		this.userId = userId;
 		setBackground(Color.GRAY);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 200, 200, 0};
