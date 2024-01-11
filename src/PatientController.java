@@ -1,4 +1,7 @@
 import  java.sql.*;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,22 +32,27 @@ public class PatientController {
     public  static  boolean deleteAppointment(Appointment appointment){
         Connection myConn = DBConnection.getConnection();
         String query = "DELETE FROM APPOINTMENT where APPOINTMENT.patientID = ? and APPOINTMENT.doctorID =  ?  and  APPOINTMENT.appointmentDate =  ? ;";
+        LocalDateTime currentDate= LocalDateTime.now();
+        LocalDateTime sqlLocalDateTime = appointment.date.toLocalDate().atStartOfDay();
+        Duration duration = Duration.between(sqlLocalDateTime,currentDate);
+        if(duration.toHours() > 24 ){
 
-        try {
-            PreparedStatement stmt = myConn.prepareStatement(query);
-            stmt.setInt(1,appointment.patient_id);
-            stmt.setInt(2,appointment.doctor_id);
-            stmt.setDate(3,appointment.date);
 
-            int r = stmt.executeUpdate();
-            if(r>0){
-                return  true;
+            try {
+                PreparedStatement stmt = myConn.prepareStatement(query);
+                stmt.setInt(1,appointment.patient_id);
+                stmt.setInt(2,appointment.doctor_id);
+                stmt.setDate(3,appointment.date);
+
+                int r = stmt.executeUpdate();
+                if(r>0){
+                    return  true;
+                }
+
+            }catch (SQLException e){
+                e.printStackTrace();
             }
-
-        }catch (SQLException e){
-            e.printStackTrace();
         }
-
 
         return  false;
 
