@@ -1,7 +1,7 @@
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.print.Doc;
+import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class UserController {
@@ -531,6 +531,55 @@ public class UserController {
         }
     }
 
+    public static ArrayList<Doctor> getFilteredDoctors(String expertiseName,int minDay, int maxDay, int minHour, int maxHour){
+        Connection myConn = DBConnection.getConnection();
+        String query  = "Select distinct name_surname,user_name ,age,gender,password_,expertiseID \n" +
+                "from doctor_view natural join EXPERTISE,  DOCTOR_AVAILABILITY\n" +
+                "where doctor_view.userID = DOCTOR_AVAILABILITY.doctorID and EXPERTISE.expertiseName = ?  and DOCTOR_AVAILABILITY.availability = 1\n" +
+                " and DATE(DOCTOR_AVAILABILITY.date_) > ?  and DATE(DOCTOR_AVAILABILITY.date_) < ?  and TIME(DOCTOR_AVAILABILITY.date_) > ? and TIME(DOCTOR_AVAILABILITY.date_) < ? ;\n";
 
+        String minDate_STR=  "2024-01-" +minDay;
+        String maxDate_STR=  "2024-01-" + maxDay;
+
+        String minHour_STR =  minHour + ":00:00";
+        String maxHour_STR =  maxHour + ":00:00";
+
+        ArrayList<Doctor> doctors = new ArrayList< Doctor >();
+
+        try{
+            Date minDate = Date.valueOf(minDate_STR);
+            Date maxDate = Date.valueOf(maxDate_STR);
+            Time minTime = Time.valueOf(minHour_STR);
+            Time maxTime = Time.valueOf(maxHour_STR);
+            PreparedStatement stmt= myConn.prepareStatement(query);
+            stmt.setString(0,expertiseName);
+            stmt.setDate(1,minDate);
+            stmt.setDate(2,maxDate);
+            stmt.setTime(3,minTime);
+            stmt.setTime(4,maxTime);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()){
+                int password= rs.getInt("password_");
+
+                Doctor doctor = new Doctor(rs.getString("name_surname"),rs.getInt("age"),rs.getString("user_name"),
+                        rs.getString("gender"), rs.getInt("expertiseID"),String.valueOf(password));
+
+                doctors.add(doctor);
+            }
+
+
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+
+
+
+        return  doctors;
+
+    };
 
 }
