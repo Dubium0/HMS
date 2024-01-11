@@ -29,7 +29,7 @@ public class MainWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainWindow window = new MainWindow(1);
+					MainWindow window = new MainWindow(17);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -66,6 +66,7 @@ public class MainWindow {
         menuTextPanel1.setLayout(new GridLayout(1, 0, 0, 0));
         
         JLabel helloText = new JLabel("Hello " + UserController.getUser(userId).user_name);
+		helloText.setName("hello username");
         helloText.setPreferredSize(new Dimension(0, 50));
         helloText.setHorizontalAlignment(SwingConstants.CENTER);
         helloText.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -90,7 +91,7 @@ public class MainWindow {
         profileButton.addMouseListener(new MouseAdapter() {
         	@Override
         	public void mouseClicked(MouseEvent e) {
-        		changePanel(frame,new ProfilePage(userId));
+        		changePanel(frame,new ProfilePage(frame,userId));
         	}
         });
         profileButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -153,7 +154,7 @@ public class MainWindow {
 		int userType = LoginController.getAccountType(userId);
 		System.out.println(userType);
 		if (userType == LoginController.PATIENT) {
-			changePanel(frame,new PatientMainPage(frame));
+			changePanel(frame,new PatientMainPage(frame,userId));
 			
 		}
 		else if (userType == LoginController.ADMIN) {
@@ -167,4 +168,5 @@ public class MainWindow {
 		}
 		
 	}
+
 }

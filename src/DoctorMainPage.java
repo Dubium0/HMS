@@ -38,7 +38,7 @@ public class DoctorMainPage extends JPanel {
 		gbc_calendarButton.gridy = 1;
 		add(calendarButton, gbc_calendarButton);
 		
-		JButton btnNewButton_1 = new JButton("New button");
+		JButton btnNewButton_1 = new JButton("Appointments");
 		btnNewButton_1.setFont(new Font("Tahoma", Font.PLAIN, 35));
 		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
 		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 5);
@@ -46,6 +46,8 @@ public class DoctorMainPage extends JPanel {
 		gbc_btnNewButton_1.gridx = 2;
 		gbc_btnNewButton_1.gridy = 1;
 		add(btnNewButton_1, gbc_btnNewButton_1);
+
+
 
 	}
 

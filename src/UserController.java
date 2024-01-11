@@ -478,7 +478,6 @@ public class UserController {
     public static User getUser(int userId){
         Connection myConn = DBConnection.getConnection();
         int userType = LoginController.getAccountType(userId);
-        String query = "SELECT * FROM user where  user.userId = ?";
         User user = null;
         if (userType == LoginController.PATIENT){
             user = UserController.getPatient(userId);
@@ -494,6 +493,42 @@ public class UserController {
         }
 
         return  user;
+    }
+
+    public static boolean changeUsername(int userId, String newUsername) {
+        Connection myConn = DBConnection.getConnection();
+        try {
+            if (!AccountValidator.validateUsername(newUsername)) {
+                return false;
+            } else {
+                PreparedStatement preparedStatement = myConn.prepareStatement("UPDATE user SET user_name = ? WHERE userid = ?");
+                preparedStatement.setString(1, newUsername);
+                preparedStatement.setInt(2, userId);
+                preparedStatement.executeUpdate();
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean changePassword(int userId, String newPassword) {
+        Connection myConn = DBConnection.getConnection();
+        try {
+            if (!AccountValidator.validatePassword(newPassword)) {
+                return false;
+            } else {
+                PreparedStatement preparedStatement = myConn.prepareStatement("UPDATE user SET password_ = ? WHERE userid = ?");
+                preparedStatement.setString(1, newPassword);
+                preparedStatement.setInt(2, userId);
+                preparedStatement.executeUpdate();
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 

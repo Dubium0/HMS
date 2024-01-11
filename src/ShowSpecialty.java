@@ -401,6 +401,21 @@ public class ShowSpecialty extends JPanel {
 		tempPanel4.add(buttonPanel4, BorderLayout.SOUTH);
 		
 		JButton editExpertiseButton = new JButton("Edit");
+		editExpertiseButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int selectedRow =table2.getSelectedRow();
+				if (selectedRow != -1){
+					int userId = (int) table2.getValueAt(selectedRow,0);
+					//editExpertiseWindow(userId);
+				}
+				else{
+					JOptionPane.showMessageDialog(new JFrame(), "there is no selected object!");
+				}
+
+
+			}
+		});
 		editExpertiseButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		editExpertiseButton.setPreferredSize(new Dimension(300, 100));
 		buttonPanel4.add(editExpertiseButton);
@@ -462,5 +477,7 @@ public class ShowSpecialty extends JPanel {
 
 		}
 	}
+
+
 
 }

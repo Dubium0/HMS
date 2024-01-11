@@ -1,18 +1,12 @@
-import javax.swing.JPanel;
+import javax.swing.*;
 
-import javax.swing.BoxLayout;
-
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-import java.awt.Font;
-import javax.swing.JFrame;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 public class PatientMainPage extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -21,7 +15,7 @@ public class PatientMainPage extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public PatientMainPage(JFrame frame) {
+	public PatientMainPage(JFrame frame, int userId) {
 		this.parentFrame = frame;
 		this.userId = userId;
 		setBackground(Color.GRAY);
@@ -34,8 +28,12 @@ public class PatientMainPage extends JPanel {
 		
 		JButton makeAppointmetButton = new JButton("Make Appointment");
 		makeAppointmetButton.setFont(new Font("Tahoma", Font.PLAIN, 35));
-		makeAppointmetButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		makeAppointmetButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				changePanel(parentFrame,new MakeAppointmentPage(parentFrame,userId));
+
+
 			}
 		});
 		GridBagConstraints gbc_makeAppointmetButton = new GridBagConstraints();
@@ -54,5 +52,13 @@ public class PatientMainPage extends JPanel {
 		gbc_showAppointmetButton.gridy = 1;
 		add(showAppointmetButton, gbc_showAppointmetButton);
 	}
+	public void  changePanel(JFrame frame,JPanel newPanel ) {
+
+		frame.getContentPane().remove((JPanel) frame.getContentPane().getComponent(1));
+		frame.getContentPane().add(newPanel, BorderLayout.CENTER);
+		frame.getContentPane().repaint();
+		frame.getContentPane().revalidate();
+	}
+
 
 }
