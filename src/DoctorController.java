@@ -282,5 +282,26 @@ public class DoctorController {
 
     }
 
+    public  static  ArrayList<Appointment> getAppointmentsByDoctorID(int doctor_id){
+
+        ArrayList<Appointment> appointments = new ArrayList<Appointment>();
+        Connection myConn = DBConnection.getConnection();
+
+        String query  =  "Select * from appointment  where appointment.doctorID = ?";
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            stmt.setInt(2,doctor_id);
+            ResultSet rs= stmt.executeQuery();
+            while (rs.next()){
+                Appointment appointment = new Appointment(rs.getDate(1),rs.getInt(2),rs.getInt(2));
+                appointment.booking_id  = rs.getInt(4);
+                appointments.add(appointment);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return  appointments;
+    }
 
 }
