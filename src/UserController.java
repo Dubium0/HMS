@@ -3,6 +3,7 @@ import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.time.LocalDate;
 
 public class UserController {
     public static ArrayList<Patient> getPatients(){
@@ -537,9 +538,13 @@ public class UserController {
                 "from doctor_view natural join EXPERTISE,  DOCTOR_AVAILABILITY\n" +
                 "where doctor_view.userID = DOCTOR_AVAILABILITY.doctorID and EXPERTISE.expertiseName = ?  and DOCTOR_AVAILABILITY.availability = 1\n" +
                 " and DATE(DOCTOR_AVAILABILITY.date_) > ?  and DATE(DOCTOR_AVAILABILITY.date_) < ?  and TIME(DOCTOR_AVAILABILITY.date_) > ? and TIME(DOCTOR_AVAILABILITY.date_) < ? ;\n";
-
-        String minDate_STR=  "2024-01-" +minDay;
-        String maxDate_STR=  "2024-01-" + maxDay;
+        String query2  = "Select distinct name_surname,user_name ,age,gender,password_,expertiseID \n" +
+                "from doctor_view natural join EXPERTISE,  DOCTOR_AVAILABILITY\n" +
+                "where doctor_view.userID = DOCTOR_AVAILABILITY.doctorID  and DOCTOR_AVAILABILITY.availability = 1\n" +
+                " and DATE(DOCTOR_AVAILABILITY.date_) > ?  and DATE(DOCTOR_AVAILABILITY.date_) < ?  and TIME(DOCTOR_AVAILABILITY.date_) > ? and TIME(DOCTOR_AVAILABILITY.date_) < ? ;\n";
+        String minDate_STR=  LocalDate.now().plusDays(minDay).toString();
+        System.out.println(expertiseName);
+        String maxDate_STR=  LocalDate.now().plusDays(maxDay).toString();
 
         String minHour_STR =  minHour + ":00:00";
         String maxHour_STR =  maxHour + ":00:00";
@@ -551,12 +556,22 @@ public class UserController {
             Date maxDate = Date.valueOf(maxDate_STR);
             Time minTime = Time.valueOf(minHour_STR);
             Time maxTime = Time.valueOf(maxHour_STR);
-            PreparedStatement stmt= myConn.prepareStatement(query);
-            stmt.setString(0,expertiseName);
-            stmt.setDate(1,minDate);
-            stmt.setDate(2,maxDate);
-            stmt.setTime(3,minTime);
-            stmt.setTime(4,maxTime);
+            PreparedStatement stmt;
+            if (expertiseName == null){
+                stmt= myConn.prepareStatement(query2);
+                stmt.setDate(1,minDate);
+                stmt.setDate(2,maxDate);
+                stmt.setTime(3,minTime);
+                stmt.setTime(4,maxTime);
+            }else{
+                stmt= myConn.prepareStatement(query);
+                stmt.setString(1,expertiseName);
+                stmt.setDate(2,minDate);
+                stmt.setDate(3,maxDate);
+                stmt.setTime(4,minTime);
+                stmt.setTime(5,maxTime);
+            }
+
 
             ResultSet rs = stmt.executeQuery();
 

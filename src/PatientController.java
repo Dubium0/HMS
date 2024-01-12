@@ -88,10 +88,10 @@ public class PatientController {
         String query  =  "Select * from appointment  where appointment.patientID = ?";
         try {
             PreparedStatement stmt = myConn.prepareStatement(query);
-            stmt.setInt(2,patient_id);
+            stmt.setInt(1,patient_id);
             ResultSet rs= stmt.executeQuery();
             while (rs.next()){
-                Appointment appointment = new Appointment(rs.getDate(1),rs.getInt(2),rs.getInt(2));
+                Appointment appointment = new Appointment(rs.getDate(1),rs.getInt(2),rs.getInt(3));
                 appointment.booking_id  = rs.getInt(4);
                 appointments.add(appointment);
             }
@@ -122,6 +122,48 @@ public class PatientController {
 
         return  appointment;
 
+    }
+
+    public static ArrayList<Appointment> getUpcomingAppointment(int patient_id){
+        ArrayList<Appointment> appointments = new ArrayList<Appointment>();
+        Connection myConn = DBConnection.getConnection();
+
+        String query  =  "Select * from appointment  where appointment.patientID = ? and appointment.appointmentDate > CURRENT_DATE()";
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            stmt.setInt(1,patient_id);
+            ResultSet rs= stmt.executeQuery();
+            while (rs.next()){
+                Appointment appointment = new Appointment(rs.getDate(1),rs.getInt(2),rs.getInt(3));
+                appointment.booking_id  = rs.getInt(4);
+                appointments.add(appointment);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return  appointments;
+    }
+
+    public static ArrayList<Appointment> getPastAppointment(int patient_id){
+        ArrayList<Appointment> appointments = new ArrayList<Appointment>();
+        Connection myConn = DBConnection.getConnection();
+
+        String query  =  "Select * from appointment  where appointment.patientID = ? and appointment.appointmentDate < CURRENT_DATE()";
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            stmt.setInt(1,patient_id);
+            ResultSet rs= stmt.executeQuery();
+            while (rs.next()){
+                Appointment appointment = new Appointment(rs.getDate(1),rs.getInt(2),rs.getInt(3));
+                appointment.booking_id  = rs.getInt(4);
+                appointments.add(appointment);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return  appointments;
     }
 
 }

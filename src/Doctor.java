@@ -21,6 +21,6 @@ public class Doctor extends  User{
 
     @Override
     public String toString() {
-        return super.toString() + "Expertise : " + this.expertise_id + "\n";
+        return super.toString() + "Expertise : " + EntityController.getExpertiseByID(this.expertise_id).name + "\n";
     }
 }

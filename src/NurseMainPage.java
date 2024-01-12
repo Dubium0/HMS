@@ -14,6 +14,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 public class NurseMainPage extends JPanel {
 
@@ -36,8 +38,10 @@ public class NurseMainPage extends JPanel {
 		
 		JButton calendarButton = new JButton("My Calendar");
 		calendarButton.setFont(new Font("Tahoma", Font.PLAIN, 35));
-		calendarButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		calendarButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				changePanel(parentFrame,new NurseAppointmentPage(parentFrame,userId));
 			}
 		});
 		GridBagConstraints gbc_calendarButton = new GridBagConstraints();
@@ -56,6 +60,13 @@ public class NurseMainPage extends JPanel {
 		gbc_btnNewButton_1.gridy = 1;
 		add(btnNewButton_1, gbc_btnNewButton_1);
 
+	}
+	public void  changePanel(JFrame frame,JPanel newPanel ) {
+
+		frame.getContentPane().remove((JPanel) frame.getContentPane().getComponent(1));
+		frame.getContentPane().add(newPanel, BorderLayout.CENTER);
+		frame.getContentPane().repaint();
+		frame.getContentPane().revalidate();
 	}
 
 }

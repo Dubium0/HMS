@@ -1,14 +1,12 @@
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class DoctorMainPage extends JPanel {
 
@@ -39,6 +37,12 @@ public class DoctorMainPage extends JPanel {
 		add(calendarButton, gbc_calendarButton);
 		
 		JButton btnNewButton_1 = new JButton("Appointments");
+		btnNewButton_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				changePanel(parentFrame,new DoctorAppointmentPage(parentFrame,userId));
+			}
+		});
 		btnNewButton_1.setFont(new Font("Tahoma", Font.PLAIN, 35));
 		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
 		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 5);
@@ -49,6 +53,13 @@ public class DoctorMainPage extends JPanel {
 
 
 
+	}
+	public void  changePanel(JFrame frame,JPanel newPanel ) {
+
+		frame.getContentPane().remove((JPanel) frame.getContentPane().getComponent(1));
+		frame.getContentPane().add(newPanel, BorderLayout.CENTER);
+		frame.getContentPane().repaint();
+		frame.getContentPane().revalidate();
 	}
 
 }

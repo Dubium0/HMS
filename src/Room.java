@@ -12,7 +12,7 @@ public class Room {
 
     @Override
     public String toString() {
-        return "\nInfo Room " + room_id + "\n"
+        return "\nId :  " + room_id + "\n"
                 +"Room type : " + roomType + "\n"
                 +"Room Capacity : " + room_capacity + "\n";
     }

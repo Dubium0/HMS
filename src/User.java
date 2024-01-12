@@ -10,11 +10,9 @@ public  class User {
 
     @Override
     public String toString() {
-        return "\nInfo User " + user_id + "\n"
+        return "\nId : " + user_id + "\n"
                 +"Name Surname : " + name_surname  +"\n"
                 +"Age : " + age + "\n"
-                +"User name : " + user_name + "\n"
-                +"Gender : " + gender + "\n"
-                +"Password : " + password + "\n";
+                +"Gender : " + gender + "\n";
     }
 }

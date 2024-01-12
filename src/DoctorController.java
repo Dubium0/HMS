@@ -52,6 +52,24 @@ public class DoctorController {
 
         return  booking;
     }
+    public static  Booking getBookingByBookingId(int booking_id){
+        Connection myConn = DBConnection.getConnection();
+        Booking booking =null;
+        String query  =  "SELECT * FROM cs202_project.booking where bookingId = ?";
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            stmt.setInt(1,booking_id);
+            ResultSet rs= stmt.executeQuery();
+            while (rs.next()){
+                booking = new Booking(rs.getInt(2),rs.getInt(3));
+                booking.booking_id = booking_id;
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return  booking;
+    }
     private   static boolean incrementRoomPatientCountForDate(Date date, int room_id){
         RoomAvailability currentRoomAvailability  = EntityController.getRoomAvailabilityForDateAndRoom(date,room_id);
         if(currentRoomAvailability ==null)return  false;
@@ -290,10 +308,55 @@ public class DoctorController {
         String query  =  "Select * from appointment  where appointment.doctorID = ?";
         try {
             PreparedStatement stmt = myConn.prepareStatement(query);
-            stmt.setInt(2,doctor_id);
+            stmt.setInt(1,doctor_id);
             ResultSet rs= stmt.executeQuery();
             while (rs.next()){
-                Appointment appointment = new Appointment(rs.getDate(1),rs.getInt(2),rs.getInt(2));
+                Appointment appointment = new Appointment(rs.getDate(1),rs.getInt(2),rs.getInt(3));
+                appointment.booking_id  = rs.getInt(4);
+                appointments.add(appointment);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return  appointments;
+    }
+
+
+    public  static  ArrayList<Appointment> getUpcomingAppointmentsByDoctorID(int doctor_id){
+
+        ArrayList<Appointment> appointments = new ArrayList<Appointment>();
+        Connection myConn = DBConnection.getConnection();
+
+        String query  =  "Select * from appointment  where appointment.doctorID = ? AND appointment.appointmentDate > CURRENT_DATE()";
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            stmt.setInt(1,doctor_id);
+            ResultSet rs= stmt.executeQuery();
+            while (rs.next()){
+                Appointment appointment = new Appointment(rs.getDate(1),rs.getInt(2),rs.getInt(3));
+                appointment.booking_id  = rs.getInt(4);
+                appointments.add(appointment);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return  appointments;
+    }
+
+    public  static  ArrayList<Appointment> getPastAppointmentsByDoctorID(int doctor_id){
+
+        ArrayList<Appointment> appointments = new ArrayList<Appointment>();
+        Connection myConn = DBConnection.getConnection();
+
+        String query  =  "Select * from appointment  where appointment.doctorID = ? AND appointment.appointmentDate < CURRENT_DATE()";
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            stmt.setInt(1,doctor_id);
+            ResultSet rs= stmt.executeQuery();
+            while (rs.next()){
+                Appointment appointment = new Appointment(rs.getDate(1),rs.getInt(2),rs.getInt(3));
                 appointment.booking_id  = rs.getInt(4);
                 appointments.add(appointment);
             }

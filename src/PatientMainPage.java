@@ -43,7 +43,15 @@ public class PatientMainPage extends JPanel {
 		gbc_makeAppointmetButton.gridy = 1;
 		add(makeAppointmetButton, gbc_makeAppointmetButton);
 		
-		JButton showAppointmetButton = new JButton("Show Appointment");
+		JButton showAppointmetButton = new JButton("My Appointment");
+		showAppointmetButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				changePanel(parentFrame,new PatientAppointmentPage(parentFrame,userId));
+
+
+			}
+		});
 		showAppointmetButton.setFont(new Font("Tahoma", Font.PLAIN, 35));
 		GridBagConstraints gbc_showAppointmetButton = new GridBagConstraints();
 		gbc_showAppointmetButton.insets = new Insets(0, 0, 5, 5);

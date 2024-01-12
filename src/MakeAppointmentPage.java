@@ -303,7 +303,7 @@ public class MakeAppointmentPage extends JPanel {
         }
         public static void Filter(DefaultTableModel model ,String expertiseName, int minDay,int maxDay,int minHour, int maxHour ){
             model.setRowCount(0);
-            ArrayList<Doctor> doctorArrayList = UserController.getDoctors();    //must be changed
+            ArrayList<Doctor> doctorArrayList = UserController.getFilteredDoctors(expertiseName,minDay,maxDay,minHour,maxHour);    //must be changed
             for (Doctor doctor: doctorArrayList) {
                 Object[] rowData = {doctor.user_id,doctor.user_name,doctor.age,doctor.gender,EntityController.getExpertiseByID(doctor.expertise_id).name,EntityController.getDepartmentByID(EntityController.getExpertiseByID(doctor.expertise_id).department_id).name};
                 model.addRow(rowData);
