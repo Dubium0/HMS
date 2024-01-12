@@ -541,7 +541,7 @@ public class UserController {
                 "from doctor_view natural join EXPERTISE,  DOCTOR_AVAILABILITY\n" +
                 "where doctor_view.userID = DOCTOR_AVAILABILITY.doctorID and EXPERTISE.expertiseName = ?  and DOCTOR_AVAILABILITY.availability = 0\n" +
                 " and DATE(DOCTOR_AVAILABILITY.date_) >= ?  and DATE(DOCTOR_AVAILABILITY.date_) <= ?  and TIME(DOCTOR_AVAILABILITY.date_) >= ? " +
-                "and TIME(DOCTOR_AVAILABILITY.date_) <= ? ;\n";
+                "and TIME(DOCTOR_AVAILABILITY.date_) <= ?) ;\n";
 
         String query_without_expertise  ="Select *\n" +
                 "from doctor_view\n" +
@@ -549,14 +549,14 @@ public class UserController {
                 "from doctor_view ,  DOCTOR_AVAILABILITY\n" +
                 "where doctor_view.userID = DOCTOR_AVAILABILITY.doctorID and DOCTOR_AVAILABILITY.availability = 0\n" +
                 " and DATE(DOCTOR_AVAILABILITY.date_) >= ?  and DATE(DOCTOR_AVAILABILITY.date_) <= ?  and TIME(DOCTOR_AVAILABILITY.date_) >= ? " +
-                "and TIME(DOCTOR_AVAILABILITY.date_) <= ? ;\n";
+                "and TIME(DOCTOR_AVAILABILITY.date_) <= ? );\n";
 
         YearMonth currentYearMonth = YearMonth.now();
         int month = currentYearMonth.getMonthValue();
         String monthSTR = "";
 
         String yearSTR = String.valueOf(currentYearMonth.getYear());
-        
+
 
         if(month < 10){
             monthSTR =  "0" + String.valueOf(month);
@@ -564,8 +564,8 @@ public class UserController {
             monthSTR = String.valueOf(month);
         }
 
-        String minDate_STR=  "";
-        String maxDate_STR=  "";
+        String minDate_STR;
+        String maxDate_STR;
 
 
         if(minDay < 10){
@@ -608,6 +608,11 @@ public class UserController {
 
 
         try{
+            System.out.println("min Year : " + minDate_STR);
+            System.out.println("max Year : " + maxDate_STR);
+            System.out.println("max hour : " + maxHour_STR);
+            System.out.println("min hour : " + minHour_STR);
+
             Date minDate = Date.valueOf(minDate_STR);
             Date maxDate = Date.valueOf(maxDate_STR);
             Time minTime = Time.valueOf(minHour_STR);
@@ -616,19 +621,19 @@ public class UserController {
             if(expertiseName == null){
                 stmt = myConn.prepareStatement(query_without_expertise);
 
-                stmt.setDate(0,minDate);
-                stmt.setDate(1,maxDate);
-                stmt.setTime(2,minTime);
-                stmt.setTime(3,maxTime);
-            }
-            else{
-                stmt = myConn.prepareStatement(query);
-
-                stmt.setString(0,expertiseName);
                 stmt.setDate(1,minDate);
                 stmt.setDate(2,maxDate);
                 stmt.setTime(3,minTime);
                 stmt.setTime(4,maxTime);
+            }
+            else{
+                stmt = myConn.prepareStatement(query);
+
+                stmt.setString(1,expertiseName);
+                stmt.setDate(2,minDate);
+                stmt.setDate(3,maxDate);
+                stmt.setTime(4,minTime);
+                stmt.setTime(5,maxTime);
 
             }
 
