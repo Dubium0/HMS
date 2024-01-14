@@ -2,6 +2,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -45,13 +47,30 @@ public class PatientAppointmentPage extends JPanel {
 
 
 
+        JComboBox<String> filterComboBox = new JComboBox<>();
+        ArrayList<Expertise> expertiseArrayList = EntityController.getExpertises();
+        filterComboBox.addItem("Not Filtered");
+        for (Expertise expertise : expertiseArrayList){
+            filterComboBox.addItem(expertise.name);
+        }
+
+        filterComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                refreshPastAppointment(filterComboBox,model1);
+            }
+        });
+
+
+
         // Column names
         String[] col1 = {"Date","DoctorId","RoomId","NurseId"};
 
         for (String colName: col1){
             model1.addColumn(colName);
         }
-        refreshPastAppointment(model1);
+
+        refreshPastAppointment(filterComboBox,model1);
 
         JTable pastAppointmentTable = new JTable(model1);
         pastAppointmentTable.setFocusable(false);
@@ -80,6 +99,11 @@ public class PatientAppointmentPage extends JPanel {
         showPastAppointment.add(pane1);
 
 
+
+
+        showPastAppointment.add(filterComboBox);
+
+
         JPanel buttonPanel1 = new JPanel();
         buttonPanel1.setFont(new Font("Tahoma", Font.PLAIN, 30));
         pastAppointmentsTab.add(buttonPanel1, BorderLayout.SOUTH);
@@ -100,7 +124,7 @@ public class PatientAppointmentPage extends JPanel {
         refreshButton1.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                refreshPastAppointment(model1);
+                refreshPastAppointment(filterComboBox,model1);
             }
         });
         refreshButton1.setFont(new Font("Tahoma", Font.PLAIN, 30));
@@ -140,6 +164,21 @@ public class PatientAppointmentPage extends JPanel {
         };
 
 
+        JComboBox<String> filterComboBox2 = new JComboBox<>();
+        ArrayList<Expertise> expertiseArrayList2 = EntityController.getExpertises();
+        filterComboBox2.addItem("Not Filtered");
+        for (Expertise expertise : expertiseArrayList2){
+            filterComboBox2.addItem(expertise.name);
+        }
+
+        filterComboBox2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                refreshPastAppointment(filterComboBox2,model2);
+            }
+        });
+
+
 
         // Column names
         String[] col2 = {"Date","DoctorId","RoomId","NurseId"};
@@ -147,7 +186,7 @@ public class PatientAppointmentPage extends JPanel {
         for (String colName: col2){
             model2.addColumn(colName);
         }
-        refreshUpcomingAppointment(model2);
+        refreshUpcomingAppointment(filterComboBox2,model2);
 
         JTable upcomingAppointmentTable = new JTable(model2);
         upcomingAppointmentTable.setFocusable(false);
@@ -175,6 +214,8 @@ public class PatientAppointmentPage extends JPanel {
 
         upcomingAppointmentPanel.add(pane2);
 
+        upcomingAppointmentPanel.add(filterComboBox2);
+
 
         JPanel buttonPanel2 = new JPanel();
         buttonPanel2.setFont(new Font("Tahoma", Font.PLAIN, 30));
@@ -195,7 +236,7 @@ public class PatientAppointmentPage extends JPanel {
         refreshButton2.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                refreshUpcomingAppointment(model2);
+                refreshUpcomingAppointment(filterComboBox2,model2);
             }
         });
         refreshButton2.setFont(new Font("Tahoma", Font.PLAIN, 30));
@@ -226,35 +267,78 @@ public class PatientAppointmentPage extends JPanel {
         frame.getContentPane().revalidate();
     }
 
-    private void refreshPastAppointment(DefaultTableModel model) {
+    private void refreshPastAppointment(JComboBox comboBox,DefaultTableModel model) {
         model.setRowCount(0);
-        ArrayList<Appointment> appointmentArrayList = PatientController.getPastAppointment(userId);
-        for (Appointment appointment : appointmentArrayList) {
-            Booking booking = DoctorController.getBookingByBookingId(appointment.booking_id);
-            if (booking == null){
-                Object[] rowData = {appointment.date,appointment.doctor_id,null,null};
-                model.addRow(rowData);
-            }else{
-                Object[] rowData = {appointment.date,appointment.doctor_id,booking.room_id,booking.nurse_id};
-                model.addRow(rowData);
-            }
+        if (comboBox.getSelectedItem().equals("Not Filtered")){
+            ArrayList<Appointment> appointmentArrayList = PatientController.getPastAppointment(userId);
+            for (Appointment appointment : appointmentArrayList) {
+                Booking booking = DoctorController.getBookingByBookingId(appointment.booking_id);
+                if (booking == null){
+                    Object[] rowData = {appointment.date,appointment.doctor_id,null,null};
+                    model.addRow(rowData);
+                }else{
+                    Object[] rowData = {appointment.date,appointment.doctor_id,booking.room_id,booking.nurse_id};
+                    model.addRow(rowData);
+                }
 
+            }
         }
+        else {
+            ArrayList<Appointment> appointmentArrayList = PatientController.getPastAppointment(userId);
+            for (Appointment appointment : appointmentArrayList) {
+                Doctor doctor = UserController.getDoctor(appointment.doctor_id);
+                String expertiseName = EntityController.getExpertiseByID(doctor.expertise_id).name;
+                if (expertiseName.equals(comboBox.getSelectedItem())){
+                    Booking booking = DoctorController.getBookingByBookingId(appointment.booking_id);
+                    if (booking == null){
+                        Object[] rowData = {appointment.date,appointment.doctor_id,null,null};
+                        model.addRow(rowData);
+                    }else{
+                        Object[] rowData = {appointment.date,appointment.doctor_id,booking.room_id,booking.nurse_id};
+                        model.addRow(rowData);
+                    }
+                }
+
+
+            }
+        }
+
     }
 
-    private void refreshUpcomingAppointment(DefaultTableModel model) {
+    private void refreshUpcomingAppointment(JComboBox comboBox,DefaultTableModel model) {
         model.setRowCount(0);
-        ArrayList<Appointment> appointmentArrayList = PatientController.getUpcomingAppointment(userId);
-        for (Appointment appointment : appointmentArrayList) {
-            Booking booking = DoctorController.getBookingByBookingId(appointment.booking_id);
-            if (booking == null){
-                Object[] rowData = {appointment.date,appointment.doctor_id,null,null};
-                model.addRow(rowData);
-            }else{
-                Object[] rowData = {appointment.date,appointment.doctor_id,booking.room_id,booking.nurse_id};
-                model.addRow(rowData);
-            }
+        if (comboBox.getSelectedItem().equals("Not Filtered")){
+            ArrayList<Appointment> appointmentArrayList = PatientController.getUpcomingAppointment(userId);
+            for (Appointment appointment : appointmentArrayList) {
+                Booking booking = DoctorController.getBookingByBookingId(appointment.booking_id);
+                if (booking == null){
+                    Object[] rowData = {appointment.date,appointment.doctor_id,null,null};
+                    model.addRow(rowData);
+                }else{
+                    Object[] rowData = {appointment.date,appointment.doctor_id,booking.room_id,booking.nurse_id};
+                    model.addRow(rowData);
+                }
 
+            }
+        }
+        else {
+            ArrayList<Appointment> appointmentArrayList = PatientController.getPastAppointment(userId);
+            for (Appointment appointment : appointmentArrayList) {
+                Doctor doctor = UserController.getDoctor(appointment.doctor_id);
+                String expertiseName = EntityController.getExpertiseByID(doctor.expertise_id).name;
+                if (expertiseName.equals(comboBox.getSelectedItem())){
+                    Booking booking = DoctorController.getBookingByBookingId(appointment.booking_id);
+                    if (booking == null){
+                        Object[] rowData = {appointment.date,appointment.doctor_id,null,null};
+                        model.addRow(rowData);
+                    }else{
+                        Object[] rowData = {appointment.date,appointment.doctor_id,booking.room_id,booking.nurse_id};
+                        model.addRow(rowData);
+                    }
+                }
+
+
+            }
         }
     }
     private void getInformation(JTable table){
