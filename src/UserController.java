@@ -93,7 +93,7 @@ public class UserController {
             stmt.setString(1,patient.name_surname);
             stmt.setString(2,patient.user_name);
             stmt.setInt(3,patient.age);
-            stmt.setString(4,patient.password);
+            stmt.setInt(4,patient.password.hashCode());
             stmt.setString(5,patient.gender);
             int r = stmt.executeUpdate();
             if(r >0){
@@ -231,7 +231,7 @@ public class UserController {
             stmt.setString(1,nurse.name_surname);
             stmt.setString(2,nurse.user_name);
             stmt.setInt(3,nurse.age);
-            stmt.setString(4,nurse.password);
+            stmt.setInt(4,nurse.password.hashCode());
             stmt.setString(5,nurse.gender);
             int r = stmt.executeUpdate();
             if(r >0){
@@ -348,7 +348,7 @@ public class UserController {
             stmt.setString(1,admin.name_surname);
             stmt.setString(2,admin.user_name);
             stmt.setInt(3,admin.age);
-            stmt.setString(4,admin.password);
+            stmt.setInt(4,admin.password.hashCode());
             stmt.setString(5,admin.gender);
             int r = stmt.executeUpdate();
             if(r >0){
@@ -378,7 +378,6 @@ public class UserController {
         }
         return user_id;
     }
-
 
 
     public static ArrayList<Doctor> getDoctors(){
@@ -468,7 +467,7 @@ public class UserController {
             stmt.setString(1,doctor.name_surname);
             stmt.setString(2,doctor.user_name);
             stmt.setInt(3,doctor.age);
-            stmt.setString(4,doctor.password);
+            stmt.setInt(4,doctor.password.hashCode());
             stmt.setString(5,doctor.gender);
             int r = stmt.executeUpdate();
             if(r >0){
