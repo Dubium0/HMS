@@ -70,7 +70,7 @@ public class DoctorController {
 
         return  booking;
     }
-    private   static boolean incrementRoomPatientCountForDate(Date date, int room_id){
+    private   static boolean incrementRoomPatientCountForDate(Timestamp date, int room_id){
         RoomAvailability currentRoomAvailability  = EntityController.getRoomAvailabilityForDateAndRoom(date,room_id);
         if(currentRoomAvailability ==null)return  false;
 
@@ -90,7 +90,7 @@ public class DoctorController {
         try {
             PreparedStatement  stmt = myConn.prepareStatement(query,PreparedStatement.RETURN_GENERATED_KEYS);
             stmt.setInt(1,room_id);
-            stmt.setDate(2,date);
+            stmt.setTimestamp(2,date);
 
             int r = stmt.executeUpdate();
             if(r>0){
@@ -117,7 +117,7 @@ public class DoctorController {
             try {
                 PreparedStatement stmt = myConn.prepareStatement(query_2,PreparedStatement.RETURN_GENERATED_KEYS);
                 stmt.setInt(1, room_id);
-                stmt.setDate(2,date);
+                stmt.setTimestamp(2,date);
                 int r  = stmt.executeUpdate();
 
                 if(r>0){
@@ -148,7 +148,7 @@ public class DoctorController {
             stmt.setInt(1,booking_id);
             stmt.setInt(2,appointment.doctor_id);
             stmt.setInt(3,appointment.patient_id);
-            stmt.setDate(4,appointment.date);
+            stmt.setTimestamp(4,appointment.date);
             int r = stmt.executeUpdate();
             if(r>0){
                 return  true;
@@ -228,7 +228,7 @@ public class DoctorController {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()){
-                DoctorAvailability availability = new DoctorAvailability(doctor_id,rs.getDate(2),rs.getBoolean(3));
+                DoctorAvailability availability = new DoctorAvailability(doctor_id,rs.getTimestamp(2),rs.getBoolean(3));
                 doctorAvailabilities.add(availability);
             }
             stmt.close();
@@ -255,7 +255,7 @@ public class DoctorController {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()){
-                DoctorAvailability availability = new DoctorAvailability(rs.getInt(1),rs.getDate(2),rs.getBoolean(3));
+                DoctorAvailability availability = new DoctorAvailability(rs.getInt(1),rs.getTimestamp(2),rs.getBoolean(3));
                 doctorAvailabilities.add(availability);
             }
             stmt.close();
@@ -282,7 +282,7 @@ public class DoctorController {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()){
-                DoctorAvailability availability = new DoctorAvailability(rs.getInt(1),rs.getDate(2),rs.getBoolean(3));
+                DoctorAvailability availability = new DoctorAvailability(rs.getInt(1),rs.getTimestamp(2),rs.getBoolean(3));
                 doctorAvailabilities.add(availability);
             }
             stmt.close();
@@ -311,7 +311,7 @@ public class DoctorController {
             stmt.setInt(1,doctor_id);
             ResultSet rs= stmt.executeQuery();
             while (rs.next()){
-                Appointment appointment = new Appointment(rs.getDate(1),rs.getInt(2),rs.getInt(3));
+                Appointment appointment = new Appointment(rs.getTimestamp(1),rs.getInt(2),rs.getInt(3));
                 appointment.booking_id  = rs.getInt(4);
                 appointments.add(appointment);
             }
@@ -334,7 +334,7 @@ public class DoctorController {
             stmt.setInt(1,doctor_id);
             ResultSet rs= stmt.executeQuery();
             while (rs.next()){
-                Appointment appointment = new Appointment(rs.getDate(1),rs.getInt(2),rs.getInt(3));
+                Appointment appointment = new Appointment(rs.getTimestamp(1),rs.getInt(2),rs.getInt(3));
                 appointment.booking_id  = rs.getInt(4);
                 appointments.add(appointment);
             }
@@ -356,7 +356,7 @@ public class DoctorController {
             stmt.setInt(1,doctor_id);
             ResultSet rs= stmt.executeQuery();
             while (rs.next()){
-                Appointment appointment = new Appointment(rs.getDate(1),rs.getInt(2),rs.getInt(3));
+                Appointment appointment = new Appointment(rs.getTimestamp(1),rs.getInt(2),rs.getInt(3));
                 appointment.booking_id  = rs.getInt(4);
                 appointments.add(appointment);
             }

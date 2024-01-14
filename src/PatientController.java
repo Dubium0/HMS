@@ -1,5 +1,6 @@
 import  java.sql.*;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class PatientController {
 
         try {
             PreparedStatement stmt = myConn.prepareStatement(query);
-            stmt.setDate(1,appointment.date);
+            stmt.setTimestamp(1,appointment.date);
             stmt.setInt(2,appointment.patient_id);
             stmt.setInt(3,appointment.doctor_id);
 
@@ -33,8 +34,9 @@ public class PatientController {
         Connection myConn = DBConnection.getConnection();
         String query = "DELETE FROM APPOINTMENT where APPOINTMENT.patientID = ? and APPOINTMENT.doctorID =  ?  and  APPOINTMENT.appointmentDate =  ? ;";
         LocalDateTime currentDate= LocalDateTime.now();
-        LocalDateTime sqlLocalDateTime = appointment.date.toLocalDate().atStartOfDay();
-        Duration duration = Duration.between(sqlLocalDateTime,currentDate);
+        Instant timestamp = Instant.ofEpochMilli(appointment.date.getTime());
+        Instant currentTime = Instant.now();
+        Duration duration = Duration.between(timestamp, currentTime);
         if(duration.toHours() > 24 ){
 
 
@@ -42,7 +44,7 @@ public class PatientController {
                 PreparedStatement stmt = myConn.prepareStatement(query);
                 stmt.setInt(1,appointment.patient_id);
                 stmt.setInt(2,appointment.doctor_id);
-                stmt.setDate(3,appointment.date);
+                stmt.setTimestamp(3,appointment.date);
 
                 int r = stmt.executeUpdate();
                 if(r>0){
@@ -70,7 +72,7 @@ public class PatientController {
             stmt.setInt(2,patient_id);
             ResultSet rs= stmt.executeQuery();
             while (rs.next()){
-                Appointment appointment = new Appointment(rs.getDate(1),rs.getInt(2),rs.getInt(2));
+                Appointment appointment = new Appointment(rs.getTimestamp(1),rs.getInt(2),rs.getInt(2));
                 appointment.booking_id  = rs.getInt(4);
                 appointments.add(appointment);
             }
@@ -91,7 +93,7 @@ public class PatientController {
             stmt.setInt(1,patient_id);
             ResultSet rs= stmt.executeQuery();
             while (rs.next()){
-                Appointment appointment = new Appointment(rs.getDate(1),rs.getInt(2),rs.getInt(3));
+                Appointment appointment = new Appointment(rs.getTimestamp(1),rs.getInt(2),rs.getInt(3));
                 appointment.booking_id  = rs.getInt(4);
                 appointments.add(appointment);
             }
@@ -101,7 +103,7 @@ public class PatientController {
 
         return  appointments;
     }
-    public  static  Appointment getAppointment(int patient_id,int doctor_id , Date date){
+    public  static  Appointment getAppointment(int patient_id,int doctor_id , Timestamp date){
 
         Connection myConn = DBConnection.getConnection();
         Appointment appointment = null;
@@ -110,7 +112,7 @@ public class PatientController {
             PreparedStatement stmt = myConn.prepareStatement(query);
             stmt.setInt(1,patient_id);
             stmt.setInt(2,doctor_id);
-            stmt.setDate(3,date);
+            stmt.setTimestamp(3,date);
             ResultSet rs= stmt.executeQuery();
             if(rs.next()){
                 appointment  = new Appointment(date,patient_id,doctor_id);
@@ -134,7 +136,7 @@ public class PatientController {
             stmt.setInt(1,patient_id);
             ResultSet rs= stmt.executeQuery();
             while (rs.next()){
-                Appointment appointment = new Appointment(rs.getDate(1),rs.getInt(2),rs.getInt(3));
+                Appointment appointment = new Appointment(rs.getTimestamp(1),rs.getInt(2),rs.getInt(3));
                 appointment.booking_id  = rs.getInt(4);
                 appointments.add(appointment);
             }
@@ -155,7 +157,7 @@ public class PatientController {
             stmt.setInt(1,patient_id);
             ResultSet rs= stmt.executeQuery();
             while (rs.next()){
-                Appointment appointment = new Appointment(rs.getDate(1),rs.getInt(2),rs.getInt(3));
+                Appointment appointment = new Appointment(rs.getTimestamp(1),rs.getInt(2),rs.getInt(3));
                 appointment.booking_id  = rs.getInt(4);
                 appointments.add(appointment);
             }

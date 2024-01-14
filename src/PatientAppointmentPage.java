@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -232,6 +233,21 @@ public class PatientAppointmentPage extends JPanel {
         getInformationButton2.setPreferredSize(new Dimension(300, 100));
         buttonPanel2.add(getInformationButton2);
 
+
+
+        JButton deleteAppointmentButton = new JButton("Delete Appointment");
+        deleteAppointmentButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                deleteAppointment(upcomingAppointmentTable);
+            }
+        });
+        deleteAppointmentButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
+        deleteAppointmentButton.setPreferredSize(new Dimension(300, 100));
+        buttonPanel2.add(deleteAppointmentButton);
+
+
+
         JButton refreshButton2 = new JButton("Refresh");
         refreshButton2.addMouseListener(new MouseAdapter() {
             @Override
@@ -344,7 +360,7 @@ public class PatientAppointmentPage extends JPanel {
     private void getInformation(JTable table){
         int selectedRow = table.getSelectedRow();
         if (selectedRow == -1){
-            JOptionPane.showMessageDialog(new JFrame(), "There is no selected event");
+            JOptionPane.showMessageDialog(new JFrame(), "There is no selected Appointment");
         }
         else{
             Date date = (Date)(table.getValueAt(selectedRow, 0));
@@ -375,4 +391,32 @@ public class PatientAppointmentPage extends JPanel {
 
         }
     }
+
+    private void deleteAppointment(JTable table){
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow == -1){
+            JOptionPane.showMessageDialog(new JFrame(), "There is no selected Appointment");
+        }
+        else{
+            Timestamp date = (Timestamp) (table.getValueAt(selectedRow, 0));
+            int doctorId = (int)(table.getValueAt(selectedRow, 1));
+            Appointment appointment = PatientController.getAppointment(userId,doctorId, date);
+            if (appointment != null){
+                if (PatientController.deleteAppointment(appointment)){
+                    JOptionPane.showMessageDialog(new JFrame(), "Appointment is successfully deleted");
+                }else{
+                    JOptionPane.showMessageDialog(new JFrame(), "Cannot be deleted!!");
+                }
+            }else{
+                JOptionPane.showMessageDialog(new JFrame(), "This appointment not found");
+            }
+
+
+
+
+
+
+        }
+    }
+
 }

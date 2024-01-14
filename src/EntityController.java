@@ -370,13 +370,13 @@ public class EntityController {
 
 
 
-    public  static RoomAvailability getRoomAvailabilityForDateAndRoom(Date date,int room_id){
+    public  static RoomAvailability getRoomAvailabilityForDateAndRoom(Timestamp date,int room_id){
         Connection myConn = DBConnection.getConnection();
         String query = "SElECT * FROM ROOM_AVAILABILITY where ROOM_AVAILABILITY.date_ = ? and ROOM_AVAILABILITY.roomID = ? ;";
         RoomAvailability roomAvailability =null;
         try{
             PreparedStatement stmt = myConn.prepareStatement(query);
-            stmt.setDate(1,date);
+            stmt.setTimestamp(1,date);
             stmt.setInt(2,room_id);
 
             ResultSet rs = stmt.executeQuery();
@@ -415,7 +415,7 @@ public class EntityController {
             ResultSet rs = stmt.executeQuery();
 
             while(rs.next()){
-                RoomAvailability roomAvailability = new RoomAvailability(room_id,rs.getDate(2));
+                RoomAvailability roomAvailability = new RoomAvailability(room_id,rs.getTimestamp(2));
                 roomAvailability.patient_count  = rs.getInt(3);
                 roomAvailability.availability = rs.getBoolean(4);
                 roomAvailabilities.add(roomAvailability);
@@ -446,7 +446,7 @@ public class EntityController {
             ResultSet rs = stmt.executeQuery();
 
             while(rs.next()){
-                RoomAvailability roomAvailability = new RoomAvailability(rs.getInt(1),rs.getDate(2));
+                RoomAvailability roomAvailability = new RoomAvailability(rs.getInt(1),rs.getTimestamp(2));
                 roomAvailability.patient_count  = rs.getInt(3);
                 roomAvailability.availability = rs.getBoolean(4);
                 roomAvailabilities.add(roomAvailability);

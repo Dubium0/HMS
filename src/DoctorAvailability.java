@@ -1,11 +1,12 @@
 import java.sql.Date;
+import java.sql.Timestamp;
 
 public class DoctorAvailability {
     public  int doctor_id;
-    public Date date;
+    public Timestamp date;
     public  boolean availability;
 
-    public  DoctorAvailability(int doctor_id, Date date, boolean availability){
+    public  DoctorAvailability(int doctor_id, Timestamp date, boolean availability){
         this.doctor_id = doctor_id;
         this.date = date;
         this.availability = availability;

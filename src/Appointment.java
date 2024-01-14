@@ -1,14 +1,16 @@
 import  java.sql.Date;
+import java.sql.Timestamp;
+
 public class Appointment {
 
-    public Date date;
+    public Timestamp date;
 
     public int patient_id;
     public int doctor_id;
 
     public int booking_id = -1;
 
-    public  Appointment(Date  date, int patient_id,  int doctor_id){
+    public  Appointment(Timestamp  date, int patient_id,  int doctor_id){
         this.date =date;
         this.patient_id = patient_id ;
         this.doctor_id = doctor_id;
