@@ -4,6 +4,7 @@ import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class DoctorAvailabilityPage extends JPanel {
@@ -75,15 +76,27 @@ public class DoctorAvailabilityPage extends JPanel {
         buttonPanel2.setFont(new Font("Tahoma", Font.PLAIN, 30));
         tempPanel2.add(buttonPanel2, BorderLayout.SOUTH);
 
-        JButton editRoomButton = new JButton("Edit");
+        JButton editRoomButton = new JButton("Select as Unavailability");
+        editRoomButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int index = table2.getSelectedRow();
+                if (index == -1){
+                    JOptionPane.showMessageDialog(new JFrame(), "There is no selected date!!");
+                }
+                else{
+                    Timestamp date = (Timestamp) table2.getValueAt(index,0);
+                    DoctorController.updateDoctorAvailability(date,userId,false);
+                    JOptionPane.showMessageDialog(new JFrame(), "It is updated");
+
+                }
+
+            }
+        });
         editRoomButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
         editRoomButton.setPreferredSize(new Dimension(300, 100));
         buttonPanel2.add(editRoomButton);
 
-        JButton deleteRoomButton = new JButton("Delete");
-        deleteRoomButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
-        deleteRoomButton.setPreferredSize(new Dimension(300, 100));
-        buttonPanel2.add(deleteRoomButton);
 
         JButton refreshButton = new JButton("Refresh");
         refreshButton.addMouseListener(new MouseAdapter() {
@@ -100,7 +113,7 @@ public class DoctorAvailabilityPage extends JPanel {
         cancelButton2.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                changePanel(parentFrame,new MakeAppointmentPage(parentFrame,userId));
+                changePanel(parentFrame,new DoctorMainPage(parentFrame,userId));
             }
         });
         cancelButton2.setFont(new Font("Tahoma", Font.PLAIN, 30));
@@ -120,7 +133,7 @@ public class DoctorAvailabilityPage extends JPanel {
     }
     private void refreshTable(DefaultTableModel model) {
         model.setRowCount(0);
-        ArrayList<DoctorAvailability> doctorAvailabilities = DoctorController.getAllStatedAvailabilitiesByDoctorID(0);
+        ArrayList<DoctorAvailability> doctorAvailabilities = DoctorController.getDoctorAvailabilitiesForNext_7_days(userId);
         for (DoctorAvailability dAva : doctorAvailabilities) {
             Object[] rowData = {dAva.date,dAva.availability};
             model.addRow(rowData);
