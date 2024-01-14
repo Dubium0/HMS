@@ -31,6 +31,32 @@ public class AdminController {
         return  array_list;
     }
 
+    public static ArrayList<ArrayList<String>> getPatientByTime() {
+        Connection myConn = DBConnection.getConnection();
+        String query = "Select Date(appointmentDate),count(appointmentdate) from appointment  group by Date(appointmentDate)";
+        ArrayList<ArrayList<String>> array_list = new ArrayList<>();
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            ResultSet rs=  stmt.executeQuery();
+
+            while ( rs.next()){
+                String date = rs.getString(1);
+                String count = String.valueOf(rs.getInt(2));
+                ArrayList<String> temp = new ArrayList<>();
+                temp.add(date);
+                temp.add(count);
+                array_list.add(temp);
+            }
+
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return  array_list;
+    }
+
+
     // DONE : CAN ADD NURSE
     // DONE : CAN ADD ADMIN
     // DONE : CAN ADD DOCTOR

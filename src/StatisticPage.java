@@ -52,24 +52,22 @@ public class StatisticPage extends JPanel {
 
         //tables
 
-        DefaultTableModel model1 =addTable(tablePanel,"Table 1: Title 1",new String[]{"Number of Patient","Department Name"});
-        DefaultTableModel model2 =addTable(tablePanel,"Table 2: Title 2",new String[]{"asdsa","ddsd"});
+        DefaultTableModel model1 =addTable(tablePanel,"Number of Patient According to Department",new String[]{"Number of Patient","Department Name"});
+        DefaultTableModel model2 =addTable(tablePanel,"Number of Patient According to Date",new String[]{"Date","Number of Patient"});
         DefaultTableModel model3 =addTable(tablePanel,"Table 3: Title 3",new String[]{"asdsa","ddsd"});
         DefaultTableModel model4 =addTable(tablePanel,"Table 4: Title 4",new String[]{"asdsa","ddsd"});
         DefaultTableModel model5 =addTable(tablePanel,"Table 5: Title 5",new String[]{"asdsa","ddsd"});
         DefaultTableModel model6 =addTable(tablePanel,"Table 6: Title 6",new String[]{"asdsa","ddsd"});
         refreshTables1(model1);
+        refreshTables2(model2);
 
 
         refreshButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 refreshTables1(model1);
-                refreshTables1(model2);
-                refreshTables1(model3);
-                refreshTables1(model4);
-                refreshTables1(model5);
-                refreshTables1(model6);
+                refreshTables2(model2);
+                //add other
             }
         });
 
@@ -130,6 +128,18 @@ public class StatisticPage extends JPanel {
     private void refreshTables1(DefaultTableModel model) {
         model.setRowCount(0);
         ArrayList<ArrayList<String>> mainList = AdminController.getPatientNumberbyDepartment();
+        for (ArrayList<String> tempList : mainList) {
+            Object[] rowData = {tempList.get(0),tempList.get(1)};
+            model.addRow(rowData);
+
+
+
+        }
+    }
+
+    private void refreshTables2(DefaultTableModel model) {
+        model.setRowCount(0);
+        ArrayList<ArrayList<String>> mainList = AdminController.getPatientByTime();
         for (ArrayList<String> tempList : mainList) {
             Object[] rowData = {tempList.get(0),tempList.get(1)};
             model.addRow(rowData);

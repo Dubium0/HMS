@@ -175,7 +175,7 @@ public class PatientAppointmentPage extends JPanel {
         filterComboBox2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                refreshPastAppointment(filterComboBox2,model2);
+                refreshUpcomingAppointment(filterComboBox2,model2);
             }
         });
 
@@ -338,7 +338,7 @@ public class PatientAppointmentPage extends JPanel {
             }
         }
         else {
-            ArrayList<Appointment> appointmentArrayList = PatientController.getPastAppointment(userId);
+            ArrayList<Appointment> appointmentArrayList = PatientController.getUpcomingAppointment(userId);
             for (Appointment appointment : appointmentArrayList) {
                 Doctor doctor = UserController.getDoctor(appointment.doctor_id);
                 String expertiseName = EntityController.getExpertiseByID(doctor.expertise_id).name;

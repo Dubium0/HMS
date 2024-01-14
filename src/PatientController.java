@@ -36,7 +36,8 @@ public class PatientController {
         LocalDateTime currentDate= LocalDateTime.now();
         Instant timestamp = Instant.ofEpochMilli(appointment.date.getTime());
         Instant currentTime = Instant.now();
-        Duration duration = Duration.between(timestamp, currentTime);
+        Duration duration = Duration.between(currentTime,timestamp);
+        System.out.println(duration.toHours());
         if(duration.toHours() > 24 ){
 
 
@@ -130,7 +131,7 @@ public class PatientController {
         ArrayList<Appointment> appointments = new ArrayList<Appointment>();
         Connection myConn = DBConnection.getConnection();
 
-        String query  =  "Select * from appointment  where appointment.patientID = ? and appointment.appointmentDate > CURRENT_DATE()";
+        String query  =  "Select * from appointment  where appointment.patientID = ? and appointment.appointmentDate > NOW()";
         try {
             PreparedStatement stmt = myConn.prepareStatement(query);
             stmt.setInt(1,patient_id);
@@ -151,7 +152,7 @@ public class PatientController {
         ArrayList<Appointment> appointments = new ArrayList<Appointment>();
         Connection myConn = DBConnection.getConnection();
 
-        String query  =  "Select * from appointment  where appointment.patientID = ? and appointment.appointmentDate < CURRENT_DATE()";
+        String query  =  "Select * from appointment  where appointment.patientID = ? and appointment.appointmentDate < NOW()";
         try {
             PreparedStatement stmt = myConn.prepareStatement(query);
             stmt.setInt(1,patient_id);

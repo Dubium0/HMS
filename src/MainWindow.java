@@ -29,7 +29,7 @@ public class MainWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainWindow window = new MainWindow(14);
+					MainWindow window = new MainWindow(1);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
