@@ -37,12 +37,12 @@ public class PatientController {
         Instant timestamp = Instant.ofEpochMilli(appointment.date.getTime());
         Instant currentTime = Instant.now();
         Duration duration = Duration.between(currentTime,timestamp);
-        System.out.println(duration.toHours());
+        //System.out.println(duration.toHours());
         if(duration.toHours() > 24 ){
 
 
             try {
-                PreparedStatement stmt = myConn.prepareStatement(query,PreparedStatement.RETURN_GENERATED_KEYS);
+                PreparedStatement stmt = myConn.prepareStatement(query);
                 stmt.setInt(1,appointment.patient_id);
                 stmt.setInt(2,appointment.doctor_id);
 
@@ -50,15 +50,15 @@ public class PatientController {
 
                 int r = stmt.executeUpdate();
                 if(r>0){
-                    ResultSet rs = stmt.getResultSet();
-                    boolean result  = false ;
-                    if(rs.next()){
-                       result = DoctorController.deleteBooking(rs.getInt("bookingID") , appointment.date);
 
-
+                    if(appointment.booking_id >=0){
+                        return DoctorController.deleteBooking(appointment.booking_id, appointment.date);
+                    }else{
+                        return  true;
                     }
 
-                    return  result;
+
+
                 }
 
             }catch (SQLException e){

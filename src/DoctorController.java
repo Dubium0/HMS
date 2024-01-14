@@ -195,7 +195,7 @@ public class DoctorController {
         Connection myConn = DBConnection.getConnection();
         boolean result = false;
         try{
-            PreparedStatement stmt = myConn.prepareStatement(query);
+            PreparedStatement stmt = myConn.prepareStatement(query,PreparedStatement.RETURN_GENERATED_KEYS);
             stmt.setInt(1,bookingID);
             int r  = stmt.executeUpdate();
             if(r>0){
@@ -420,7 +420,7 @@ public class DoctorController {
             if(availability !=null){
                 if (availability.availability)
                     availabilities.add(availability);
-               
+
             }else{
                 availabilities.add(new DoctorAvailability(d.user_id,date,true));
 
