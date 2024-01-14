@@ -407,6 +407,62 @@ public class UserController {
 
         return  doctors;
     }
+    public static ArrayList<Doctor> getDoctorsByExpertise(String expertiseName){
+        Connection myConn = DBConnection.getConnection();
+        String query  = "SELECT * FROM doctor_view natural join expertise where expertise.expertiseName =  ? ;";
+        ArrayList<Doctor> doctors = new ArrayList<Doctor>();
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            stmt.setString(1,expertiseName);
+            ResultSet rs=  stmt.executeQuery();
+
+            while ( rs.next()){
+                String name_surname = rs.getString("name_surname");
+                int user_id = rs.getInt("userID");
+                int age = rs.getInt("age");
+                int expertise_id = rs.getInt("expertiseID");
+                String user_name = rs.getString("user_name");
+                String gender =rs.getString("gender");
+                String password = rs.getString("password_");
+                Doctor  doctor=  new Doctor(name_surname,age,user_name,gender,expertise_id,password );
+                doctor.user_id = user_id;
+                doctors.add(doctor);
+            }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return  doctors;
+    }
+    public static ArrayList<Doctor> getDoctorsByExpertise(int expertiseID){
+        Connection myConn = DBConnection.getConnection();
+        String query  = "SELECT * FROM doctor_view natural join expertise where expertise.expertiseID =  ?;";
+        ArrayList<Doctor> doctors = new ArrayList<Doctor>();
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            stmt.setInt(1,expertiseID);
+            ResultSet rs=  stmt.executeQuery();
+
+            while ( rs.next()){
+                String name_surname = rs.getString("name_surname");
+                int user_id = rs.getInt("userID");
+                int age = rs.getInt("age");
+                int expertise_id = rs.getInt("expertiseID");
+                String user_name = rs.getString("user_name");
+                String gender =rs.getString("gender");
+                String password = rs.getString("password_");
+                Doctor  doctor=  new Doctor(name_surname,age,user_name,gender,expertise_id,password );
+                doctor.user_id = user_id;
+                doctors.add(doctor);
+            }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return  doctors;
+    }
     public static Doctor getDoctor(int id){
         Connection myConn = DBConnection.getConnection();
         String query = "SELECT * FROM doctor_view where  doctor_view.userID = ?";

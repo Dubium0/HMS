@@ -216,14 +216,14 @@ public class DoctorController {
         return result;
     }
 
-    public  static  boolean updateDoctorAvailability(Date date, int doctor_id, boolean isAvailable){
+    public  static  boolean updateDoctorAvailability(Timestamp date, int doctor_id, boolean isAvailable){
         Connection myConn = DBConnection.getConnection();
         String query =  "INSERT INTO DOCTOR_AVAILABILITY (doctorID, date_,availability) VALUES\n" +
                 "(? ,  ?  ,  ? ) ON DUPLICATE KEY UPDATE availability =  ? ;";
         try {
             PreparedStatement stmt = myConn.prepareStatement(query);
             stmt.setInt(1,doctor_id);
-            stmt.setDate(2,date);
+            stmt.setTimestamp(2,date);
             stmt.setBoolean(3,isAvailable);
             stmt.setBoolean(4,isAvailable);
             int r = stmt.executeUpdate();
@@ -264,7 +264,7 @@ public class DoctorController {
 
         }
         // if does not exist it will return false
-        return  false;
+        return  true;
 
 
     }
@@ -302,7 +302,7 @@ public class DoctorController {
         ArrayList<Doctor> doctors= UserController.getDoctors();
         LocalDate localDate = LocalDate.now();
         for (int k  = 0; k <7 ; k++){
-            localDate.plusDays(1);
+
             for(int i = 8 ; i <=17 ;i++){
                 String currentDate  = localDate.toString();
 
@@ -326,9 +326,106 @@ public class DoctorController {
                 }
 
             }
+            localDate= localDate.plusDays(1);
 
         }
 
+        return  availabilities;
+
+    }
+
+
+    public  static ArrayList<DoctorAvailability> getDoctorAvailabilitiesFiltered(String expertiseName,int minDay, int maxDay, int minHour, int maxHour){
+        // sabah 8 akşam 17
+        ArrayList<DoctorAvailability> availabilities = new ArrayList<>();
+        ArrayList<Doctor> doctors  = new ArrayList<>();
+        if(expertiseName !=null){
+            doctors = UserController.getDoctorsByExpertise(expertiseName);
+        }else{
+            doctors = UserController.getDoctors();
+        }
+
+        LocalDate localDate = LocalDate.now();
+        for (int k  = minDay; k <=maxDay ; k++){
+
+            for(int i = minHour ; i <=maxHour ;i++){
+                String currentDate  = localDate.toString();
+
+                if( i< 10){
+                    currentDate +=  " 0" + i + ":00:00";
+                }else{
+                    currentDate +=  " " + i + ":00:00";
+                }
+
+                Timestamp date_ =Timestamp.valueOf(currentDate);
+
+                for(Doctor d :doctors){
+                    DoctorAvailability availability =getAllStatedAvailabilitiesByDateAndID(date_,d.user_id);
+
+                    if(availability !=null){
+                        availabilities.add(availability);
+                    }else{
+                        availabilities.add(new DoctorAvailability(d.user_id,Timestamp.valueOf(currentDate),true));
+
+                    }
+                }
+
+            }
+            localDate = localDate.plusDays(1);
+
+        }
+        return  availabilities;
+
+    }
+    public  static ArrayList<DoctorAvailability> getDoctorAvailabilitiesForNext_7_days(int doctorID){
+        // sabah 8 akşam 17
+        ArrayList<DoctorAvailability> availabilities = new ArrayList<>();
+        LocalDate localDate = LocalDate.now();
+        for (int k  = 0; k <7 ; k++){
+
+            for(int i = 8 ; i <=17 ;i++){
+                String currentDate  = localDate.toString();
+
+                if( i< 10){
+                    currentDate +=  " 0" + i + ":00:00";
+                }else{
+                    currentDate +=  " " + i + ":00:00";
+                }
+
+                Timestamp date_ =Timestamp.valueOf(currentDate);
+
+                DoctorAvailability availability =getAllStatedAvailabilitiesByDateAndID(date_,doctorID);
+
+                if(availability !=null){
+                    availabilities.add(availability);
+                }else{
+                    availabilities.add(new DoctorAvailability(doctorID,Timestamp.valueOf(currentDate),true));
+
+                }
+            }
+            localDate =  localDate.plusDays(1);
+
+        }
+
+        return  availabilities;
+
+    }
+    public  static ArrayList<DoctorAvailability> getDoctorAvailabilitiesForADateLoseless(Timestamp date){
+        ArrayList<DoctorAvailability> availabilities = new ArrayList<>();
+        ArrayList<Doctor> doctors= UserController.getDoctors();
+
+        for(Doctor d :doctors){
+            DoctorAvailability availability =getAllStatedAvailabilitiesByDateAndID(date,d.user_id);
+
+            if(availability !=null){
+                if (availability.availability)
+                    availabilities.add(availability);
+               
+            }else{
+                availabilities.add(new DoctorAvailability(d.user_id,date,true));
+
+            }
+        }
         return  availabilities;
 
     }
@@ -397,6 +494,7 @@ public class DoctorController {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()){
+                System.out.println("query returns something");
                availability = new DoctorAvailability(rs.getInt(1),rs.getTimestamp(2),rs.getBoolean(3));
 
             }
