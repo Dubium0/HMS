@@ -4,6 +4,7 @@ import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class SelectAppointmentDay extends JPanel {
@@ -38,7 +39,7 @@ public class SelectAppointmentDay extends JPanel {
 
 
         // Column names
-        String[] col2 = {"Date","Availability"};
+        String[] col2 = {"Date"};
 
         for (String colName: col2){
             model2.addColumn(colName);
@@ -77,15 +78,29 @@ public class SelectAppointmentDay extends JPanel {
         buttonPanel2.setFont(new Font("Tahoma", Font.PLAIN, 30));
         tempPanel2.add(buttonPanel2, BorderLayout.SOUTH);
 
-        JButton editRoomButton = new JButton("Edit");
-        editRoomButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
-        editRoomButton.setPreferredSize(new Dimension(300, 100));
-        buttonPanel2.add(editRoomButton);
+        JButton addAppointmentButton = new JButton("Add Appointment");
+        addAppointmentButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int rowIndex = table2.getSelectedRow();
+                Timestamp date = (Timestamp) table2.getValueAt(rowIndex,0);
+                Appointment appointment = new Appointment(date,userId,doctorId);
+                boolean result = PatientController.addAppointment(appointment);
+                if (result){
 
-        JButton deleteRoomButton = new JButton("Delete");
-        deleteRoomButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
-        deleteRoomButton.setPreferredSize(new Dimension(300, 100));
-        buttonPanel2.add(deleteRoomButton);
+                    JOptionPane.showMessageDialog(new JFrame(), "Appointment is created successfuly");
+                    changePanel(parentFrame,new MakeAppointmentPage(parentFrame,userId));
+                }else{
+                    JOptionPane.showMessageDialog(new JFrame(), "this slot is not available");
+                }
+
+
+            }
+        });
+        addAppointmentButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
+        addAppointmentButton.setPreferredSize(new Dimension(300, 100));
+        buttonPanel2.add(addAppointmentButton);
+
 
         JButton refreshButton = new JButton("Refresh");
         refreshButton.addMouseListener(new MouseAdapter() {
@@ -122,10 +137,13 @@ public class SelectAppointmentDay extends JPanel {
     }
     private void refreshTable(DefaultTableModel model) {
         model.setRowCount(0);
-        ArrayList<DoctorAvailability> doctorAvailabilities = DoctorController.getAllStatedAvailabilitiesByDoctorID(doctorId);
+        ArrayList<DoctorAvailability> doctorAvailabilities = DoctorController.getDoctorAvailabilitiesForNext_7_days(doctorId);
         for (DoctorAvailability dAva : doctorAvailabilities) {
-            Object[] rowData = {dAva.date,dAva.availability};
-            model.addRow(rowData);
+            if (dAva.availability ){
+                Object[] rowData = {dAva.date};
+                model.addRow(rowData);
+
+            }
 
         }
     }

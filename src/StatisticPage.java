@@ -54,12 +54,13 @@ public class StatisticPage extends JPanel {
 
         DefaultTableModel model1 =addTable(tablePanel,"Number of Patient According to Department",new String[]{"Number of Patient","Department Name"});
         DefaultTableModel model2 =addTable(tablePanel,"Number of Patient According to Date",new String[]{"Date","Number of Patient"});
-        DefaultTableModel model3 =addTable(tablePanel,"Table 3: Title 3",new String[]{"asdsa","ddsd"});
+        DefaultTableModel model3 =addTable(tablePanel,"Ratio of Appointment and Booking",new String[]{"Department Name","Ratio"});
         DefaultTableModel model4 =addTable(tablePanel,"Table 4: Title 4",new String[]{"asdsa","ddsd"});
         DefaultTableModel model5 =addTable(tablePanel,"Table 5: Title 5",new String[]{"asdsa","ddsd"});
         DefaultTableModel model6 =addTable(tablePanel,"Table 6: Title 6",new String[]{"asdsa","ddsd"});
         refreshTables1(model1);
         refreshTables2(model2);
+        refreshTables3(model3);
 
 
         refreshButton.addMouseListener(new MouseAdapter() {
@@ -149,6 +150,18 @@ public class StatisticPage extends JPanel {
         }
     }
 
+    private void refreshTables3(DefaultTableModel model) {
+        model.setRowCount(0);
+        ArrayList<Expertise> expertiseArrayList=  EntityController.getExpertises();
+        for (Expertise expertise:expertiseArrayList){
+            double ratio = AdminController.getRatioOfAppointmentsAndBookingsForDepartment(expertise.name);
+            Object[] rowData = {expertise.name,ratio};
+            model.addRow(rowData);
+        }
+    }
+
+
+
     public void  changePanel(JFrame frame,JPanel newPanel ) {
 
         frame.getContentPane().remove((JPanel) frame.getContentPane().getComponent(1));
@@ -156,5 +169,7 @@ public class StatisticPage extends JPanel {
         frame.getContentPane().repaint();
         frame.getContentPane().revalidate();
     }
+
+
 
 }

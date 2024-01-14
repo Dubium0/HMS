@@ -1,9 +1,11 @@
+import javax.print.Doc;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -191,6 +193,37 @@ public class DoctorAppointmentPage extends  JPanel {
         getInformationButton2.setPreferredSize(new Dimension(300, 100));
         buttonPanel2.add(getInformationButton2);
 
+        JButton addBookingButton = new JButton("Add Booking");
+        addBookingButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int selectedRow = upcomingAppointmentTable.getSelectedRow();
+                if (selectedRow == -1 ){
+                    JOptionPane.showMessageDialog(new JFrame(), "There is no selected Appointment");
+                }else{
+                    Timestamp date = (Timestamp) upcomingAppointmentTable.getValueAt(selectedRow,0);
+                    int patient_id = (int)upcomingAppointmentTable.getValueAt(selectedRow,1);
+                    Object room_id = upcomingAppointmentTable.getValueAt(selectedRow,2);
+                    Object nurse_id = upcomingAppointmentTable.getValueAt(selectedRow,3);
+                    if ((nurse_id != null) | (room_id != null) ){
+                        JOptionPane.showMessageDialog(new JFrame(), "This appointment has booking");
+                    }
+                    else{
+                        Appointment appointment =  PatientController.getAppointment(patient_id,userId,date);
+                        JDialog dialog = addBookingPage(appointment);
+                        dialog.setVisible(true);
+
+                    }
+
+                }
+
+            }
+        });
+        addBookingButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
+        addBookingButton.setPreferredSize(new Dimension(300, 100));
+        buttonPanel2.add(addBookingButton);
+
+
         JButton refreshButton2 = new JButton("Refresh");
         refreshButton2.addMouseListener(new MouseAdapter() {
             @Override
@@ -291,6 +324,93 @@ public class DoctorAppointmentPage extends  JPanel {
 
         }
     }
+    public JDialog addBookingPage(Appointment appointment) {
+        JDialog changeUsernameDialog= new JDialog(new JFrame(), "Add Booking", true);
+        changeUsernameDialog.setSize(300, 150);
+        changeUsernameDialog.setResizable(false);
+        changeUsernameDialog.setLocationRelativeTo(null);
+        changeUsernameDialog.getContentPane().setLayout(new BorderLayout(0, 0));
+
+        JPanel panel = new JPanel();
+        changeUsernameDialog.getContentPane().add(panel);
+        panel.setLayout(new GridLayout(0, 2, 10, 10));
+
+        JLabel selectRoomLabel = new JLabel("Select Room");
+        selectRoomLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        selectRoomLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        panel.add(selectRoomLabel);
+
+        JComboBox<String> roomTypeComboBox = new JComboBox<>();
+        ArrayList<RoomAvailability> roomAvailabilities =  EntityController.getRoomAvailabilitiesForDateLoseless(appointment.date);
+        for (RoomAvailability roomAvailability : roomAvailabilities){
+            if (roomAvailability.availability){
+                roomTypeComboBox.addItem(String.valueOf(roomAvailability.room_id));
+            }
+        }
+        panel.add(roomTypeComboBox);
+
+        JLabel selectNurseLabel = new JLabel("Select Nurse");
+        selectNurseLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        selectNurseLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        panel.add(selectNurseLabel);
+
+        JComboBox<String> nurseNameComboBox = new JComboBox<>();
+        ArrayList<NurseAvailability> nurseAvailabilities =  NurseController.getNurseAvailabilitiesForDateLoseless(appointment.date);
+        for (NurseAvailability nurseAvailability : nurseAvailabilities){
+            if (nurseAvailability.availability){
+                nurseNameComboBox.addItem(String.valueOf(nurseAvailability.nurse_id));
+            }
+        }
+        panel.add(nurseNameComboBox);
+
+
+        JPanel panel_2 = new JPanel();
+        changeUsernameDialog.getContentPane().add(panel_2, BorderLayout.SOUTH);
+        JButton addBookingButton = new JButton("Add Booking");
+        addBookingButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                nurseNameComboBox.getSelectedItem();
+                if ((nurseNameComboBox.getSelectedItem() != null)&(roomTypeComboBox.getSelectedItem() != null)){
+                    int nurseId = Integer.parseInt(nurseNameComboBox.getSelectedItem().toString());
+                    int roomId = Integer.parseInt(roomTypeComboBox.getSelectedItem().toString());
+                    Booking booking  = DoctorController.addBooking(appointment,roomId,nurseId);
+
+                    if (booking != null){
+                        JOptionPane.showMessageDialog(new JFrame(), "Bookng is added");
+                        changeUsernameDialog.dispose();
+                        changePanel(parentFrame,new DoctorAppointmentPage(parentFrame,userId));
+                    }else{
+                        JOptionPane.showMessageDialog(new JFrame(), "Invalid operation!!!");
+                    }
+                }
+                else{
+                    JOptionPane.showMessageDialog(new JFrame(), "Invalid operation!!!");
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            }
+        });
+        panel_2.add(addBookingButton);
+
+        return changeUsernameDialog;
+
+    }
+
 
 
 
