@@ -541,7 +541,7 @@ public class DoctorController {
         ArrayList<Appointment> appointments = new ArrayList<Appointment>();
         Connection myConn = DBConnection.getConnection();
 
-        String query  =  "Select * from appointment  where appointment.doctorID = ? AND appointment.appointmentDate > CURRENT_DATE()";
+        String query  =  "Select * from appointment  where appointment.doctorID = ? AND appointment.appointmentDate > NOW()";
         try {
             PreparedStatement stmt = myConn.prepareStatement(query);
             stmt.setInt(1,doctor_id);
@@ -563,7 +563,7 @@ public class DoctorController {
         ArrayList<Appointment> appointments = new ArrayList<Appointment>();
         Connection myConn = DBConnection.getConnection();
 
-        String query  =  "Select * from appointment  where appointment.doctorID = ? AND appointment.appointmentDate < CURRENT_DATE()";
+        String query  =  "Select * from appointment  where appointment.doctorID = ? AND appointment.appointmentDate < NOW()";
         try {
             PreparedStatement stmt = myConn.prepareStatement(query);
             stmt.setInt(1,doctor_id);
