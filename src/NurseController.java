@@ -5,7 +5,7 @@ public class NurseController {
 
 
 
-    public  static  boolean getNurseAvailabilityForDateAndNurse(Date date , int nurse_id){
+    public  static  boolean getNurseAvailabilityForDateAndNurse(Timestamp date , int nurse_id){
 
         Connection myConn = DBConnection.getConnection();
 
@@ -16,7 +16,7 @@ public class NurseController {
             PreparedStatement stmt= myConn.prepareStatement(query);
 
             stmt.setInt(1,nurse_id);
-            stmt.setDate(2,date);
+            stmt.setTimestamp(2,date);
 
             ResultSet rs = stmt.executeQuery();
 
@@ -33,7 +33,7 @@ public class NurseController {
 
     }
 
-    public  static ArrayList<NurseAvailability> getStatedNurseAvailabilitesByDate( Date date){
+    public  static ArrayList<NurseAvailability> getStatedNurseAvailabilitesByDate( Timestamp date){
         Connection myConn = DBConnection.getConnection();
 
         String query  = "SELECT *  from NURSE_AVAILABILITY where  NURSE_AVAILABILITY.date_ = ? ;";
@@ -42,7 +42,7 @@ public class NurseController {
         try {
             PreparedStatement stmt= myConn.prepareStatement(query);
 
-            stmt.setDate(1,date);
+            stmt.setTimestamp(1,date);
 
             ResultSet rs = stmt.executeQuery();
 
@@ -74,7 +74,7 @@ public class NurseController {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()){
-                NurseAvailability nurseAvailability = new NurseAvailability(rs.getInt(1),rs.getDate(2),rs.getBoolean(3));
+                NurseAvailability nurseAvailability = new NurseAvailability(rs.getInt(1),rs.getTimestamp(2),rs.getBoolean(3));
                 nurseAvailabilities.add(nurseAvailability);
 
             }
@@ -119,7 +119,7 @@ public class NurseController {
             stmt.setInt(1,nurse_id);
             ResultSet rs= stmt.executeQuery();
             while (rs.next()){
-                Appointment appointment = new Appointment(rs.getDate(1),rs.getInt(2),rs.getInt(3));
+                Appointment appointment = new Appointment(rs.getTimestamp(1),rs.getInt(2),rs.getInt(3));
                 appointment.booking_id  = rs.getInt(4);
                 appointments.add(appointment);
             }
@@ -141,7 +141,7 @@ public class NurseController {
             stmt.setInt(1,nurse_id);
             ResultSet rs= stmt.executeQuery();
             while (rs.next()){
-                Appointment appointment = new Appointment(rs.getDate(1),rs.getInt(2),rs.getInt(3));
+                Appointment appointment = new Appointment(rs.getTimestamp(1),rs.getInt(2),rs.getInt(3));
                 appointment.booking_id  = rs.getInt(4);
                 appointments.add(appointment);
             }
