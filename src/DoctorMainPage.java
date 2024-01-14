@@ -28,6 +28,12 @@ public class DoctorMainPage extends JPanel {
 		setLayout(gridBagLayout);
 		
 		JButton calendarButton = new JButton("My Calendar");
+		calendarButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				changePanel(parentFrame,new DoctorAvailabilityPage(parentFrame,userId));
+			}
+		});
 		calendarButton.setFont(new Font("Tahoma", Font.PLAIN, 35));
 		GridBagConstraints gbc_calendarButton = new GridBagConstraints();
 		gbc_calendarButton.fill = GridBagConstraints.BOTH;

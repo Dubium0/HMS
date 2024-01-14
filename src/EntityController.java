@@ -434,14 +434,14 @@ public class EntityController {
 
     }
 
-    public  static ArrayList<RoomAvailability> getStatedRoomAvailabilityForDate(Date date){
+    public  static ArrayList<RoomAvailability> getStatedRoomAvailabilityForDate(Timestamp date){
         Connection myConn = DBConnection.getConnection();
         String query = "SElECT * FROM ROOM_AVAILABILITY where ROOM_AVAILABILITY.date_ = ? ;";
         ArrayList<RoomAvailability> roomAvailabilities  = new ArrayList<RoomAvailability>();
 
         try{
             PreparedStatement stmt = myConn.prepareStatement(query);
-            stmt.setDate(1,date);
+            stmt.setTimestamp(1,date);
 
             ResultSet rs = stmt.executeQuery();
 

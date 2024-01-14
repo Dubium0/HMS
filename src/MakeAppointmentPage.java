@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -256,6 +257,18 @@ public class MakeAppointmentPage extends JPanel {
 
 
         JButton selectButton = new JButton("Select");
+        selectButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int doctorId = selectDoctor(table2);
+                System.out.println(doctorId);
+                if (doctorId != -1){
+                    changePanel(parentFrame,new SelectAppointmentDay(parentFrame,userId,doctorId));
+                }
+
+
+            }
+        });
         selectButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
         selectButton.setPreferredSize(new Dimension(300, 100));
         buttonPanel4.add(selectButton);
@@ -307,6 +320,19 @@ public class MakeAppointmentPage extends JPanel {
             for (Doctor doctor: doctorArrayList) {
                 Object[] rowData = {doctor.user_id,doctor.user_name,doctor.age,doctor.gender,EntityController.getExpertiseByID(doctor.expertise_id).name,EntityController.getDepartmentByID(EntityController.getExpertiseByID(doctor.expertise_id).department_id).name};
                 model.addRow(rowData);
+
+            }
+        }
+
+        public static int selectDoctor(JTable table){
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow == -1){
+                JOptionPane.showMessageDialog(new JFrame(), "There is no selected Doctor");
+                return -1;
+            }
+            else{
+                int doctorId = (int)(table.getValueAt(selectedRow, 0));
+                return doctorId;
 
             }
         }
