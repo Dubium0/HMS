@@ -2,8 +2,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
 
 public class AdminController {
 
@@ -57,9 +56,51 @@ public class AdminController {
         return  array_list;
     }
 
+    public  static  double getRatioOfAppointmentsAndBookingsForDepartment(String departmentName){
+        String query  = "select numberOfAppointments, numberOfBookings\n" +
+                "from department_appointments\n" +
+                "where department_appointments.departmentName = ?;";
 
 
+        Connection myConnection  = DBConnection.getConnection();
+        try {
+            PreparedStatement stmt = myConnection.prepareStatement(query);
+            stmt.setString(1,departmentName);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()){
+                int n_app = rs.getInt("numberOfAppointments");
+                int n_booking = rs.getInt("numberOfBookings");
+                return (double)n_app / (double)n_booking;
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return  -1;
+    }
 
+
+    public  static Dictionary<String,Integer> getDepartmentsMostBookedRooms(){
+        Dictionary<String,Integer> dictionary = new Hashtable<>();
+        String query = "select * \n" +
+                "from departments_booked_room_counts;\n";
+        Connection myConn = DBConnection.getConnection();
+
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()){
+                String departmentName =  rs.getString("departmentName");
+                Integer roomID  = rs.getInt("");
+            }
+
+        }catch (SQLException e ){
+            e.printStackTrace();
+        }
+
+
+        return dictionary;
+
+    }
     // DONE : CAN ADD NURSE
     // DONE : CAN ADD ADMIN
     // DONE : CAN ADD DOCTOR

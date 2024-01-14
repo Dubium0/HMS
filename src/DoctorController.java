@@ -1,4 +1,6 @@
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.Year;
 import java.util.ArrayList;
 
 public class DoctorController {
@@ -294,6 +296,41 @@ public class DoctorController {
         return  doctorAvailabilities;
 
     }
+    public  static ArrayList<DoctorAvailability> getDoctorAvailabilitiesForNext_7_days(){
+        // sabah 8 akşam 17
+        ArrayList<DoctorAvailability> availabilities = new ArrayList<>();
+        ArrayList<Doctor> doctors= UserController.getDoctors();
+        LocalDate localDate = LocalDate.now();
+        for (int k  = 0; k <7 ; k++){
+            for(int i = 8 ; i <=17 ;i++){
+                String currentDate  = localDate.toString();
+
+                if( i< 10){
+                    currentDate +=  " 0" + i + ":00:00";
+                }else{
+                    currentDate +=  " " + i + ":00:00";
+                }
+
+                Timestamp date_ =Timestamp.valueOf(currentDate);
+
+                for(Doctor d :doctors){
+                    DoctorAvailability availability =getAllStatedAvailabilitiesByDateAndID(date_,d.user_id);
+
+                    if(availability !=null){
+                        availabilities.add(availability);
+                    }else{
+                        availabilities.add(new DoctorAvailability(d.user_id,Timestamp.valueOf(currentDate),true));
+
+                    }
+                }
+
+            }
+
+        }
+
+        return  availabilities;
+
+    }
 
     public  static  ArrayList<DoctorAvailability> getAllDoctorsAvailabilities(){
         Connection myConn = DBConnection.getConnection();
@@ -346,6 +383,34 @@ public class DoctorController {
 
 
         return  doctorAvailabilities;
+
+    }
+    public static DoctorAvailability getAllStatedAvailabilitiesByDateAndID(Timestamp date,int id){
+        Connection myConn = DBConnection.getConnection();
+        String query  = "SELECT * from DOCTOR_AVAILABILITY  where  DOCTOR_AVAILABILITY.date_ = ?  and DOCTOR_AVAILABILITY.doctorID  = ?; ";
+        DoctorAvailability availability = null;
+        try {
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            stmt.setTimestamp(1,date);
+            stmt.setInt(2,id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()){
+               availability = new DoctorAvailability(rs.getInt(1),rs.getTimestamp(2),rs.getBoolean(3));
+
+            }
+            stmt.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        try {
+            myConn.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+
+        return  availability;
 
     }
 

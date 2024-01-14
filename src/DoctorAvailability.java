@@ -14,6 +14,6 @@ public class DoctorAvailability {
 
     @Override
     public String toString() {
-        return "\nInfo Doctor Availability for doctor " + doctor_id + " at " + date +"\n";
+        return "\nInfo Doctor Availability for doctor " + doctor_id + " at " + date + " is available : " + availability  +"\n";
     }
 }
