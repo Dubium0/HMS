@@ -9,7 +9,7 @@ public class DoctorController {
 
     public static  Booking addBooking(Appointment appointment, int room_id, int nurse_id){
         RoomAvailability  room_availability =  EntityController.getRoomAvailabilityForDateAndRoom(appointment.date,room_id);
-        boolean nurseAvailability = NurseController.getNurseAvailabilityForDateAndNurse(appointment.date,nurse_id);
+        boolean nurseAvailability = NurseController.getNurseAvailabilityForDateAndNurse_NurseAvailability(appointment.date,nurse_id).availability;
         Booking booking = null;
         if(nurseAvailability && room_availability.availability){
             Connection myConn = DBConnection.getConnection();
@@ -200,8 +200,11 @@ public class DoctorController {
             int r  = stmt.executeUpdate();
             if(r>0){
                 ResultSet rs = stmt.getResultSet();
+                if (rs == null){
+                    return true;
+                }
                 if(rs.next()){
-
+                    System.out.println("Booking deleted");
                     NurseController.updateNurseAvailabilityForDateAndNurse(date,rs.getInt("nurseID"),false);
                     decrementRoomPatientCount(date, rs.getInt("roomID"));
 

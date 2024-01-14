@@ -50,8 +50,9 @@ public class PatientController {
 
                 int r = stmt.executeUpdate();
                 if(r>0){
+                    System.out.println("appoinment deleted");
 
-                    if(appointment.booking_id >=0){
+                    if(appointment.booking_id >0){
                         return DoctorController.deleteBooking(appointment.booking_id, appointment.date);
                     }else{
                         return  true;

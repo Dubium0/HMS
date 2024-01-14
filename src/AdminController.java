@@ -79,8 +79,8 @@ public class AdminController {
     }
 
 
-    public  static Dictionary<String,Integer> getDepartmentsMostBookedRooms(){
-        Dictionary<String,Integer> dictionary = new Hashtable<>();
+    public  static Map<String,Integer> getDepartmentsMostBookedRooms(){
+        Map<String,Integer> dictionary = new Hashtable<>();
         String query = "select * \n" +
                 "from departments_booked_room_counts;\n";
         Connection myConn = DBConnection.getConnection();
@@ -90,7 +90,7 @@ public class AdminController {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()){
                 String departmentName =  rs.getString("departmentName");
-                Integer roomID  = rs.getInt("");
+                Integer roomID  = rs.getInt("roomId");
                 dictionary.put(departmentName,roomID);
             }
 

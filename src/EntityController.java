@@ -374,7 +374,9 @@ public class EntityController {
     public  static RoomAvailability getRoomAvailabilityForDateAndRoom(Timestamp date,int room_id){
         Connection myConn = DBConnection.getConnection();
         String query = "SElECT * FROM ROOM_AVAILABILITY where ROOM_AVAILABILITY.date_ = ? and ROOM_AVAILABILITY.roomID = ? ;";
-        RoomAvailability roomAvailability =null;
+        RoomAvailability roomAvailability = new RoomAvailability(room_id,date );
+        roomAvailability.patient_count = 0;
+        roomAvailability.availability = true;
         try{
             PreparedStatement stmt = myConn.prepareStatement(query);
             stmt.setTimestamp(1,date);

@@ -4,7 +4,7 @@ public class DBConnection {
 
     final  static String url = "jdbc:mysql://localhost:3306/cs202_project";
     final static String user  = "root";
-    final static  String password = "Yns090955.q";
+    final static  String password = "";
 
     public  static  Connection getConnection(){
         Connection myConn = null;
