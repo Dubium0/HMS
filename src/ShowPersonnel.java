@@ -68,7 +68,6 @@ public class ShowPersonnel extends JPanel {
         refreshDoctorTable(model1);
         JTable table1 = new JTable(model1);
         table1.setFocusable(false);
-
         table1.setPreferredScrollableViewportSize(new Dimension(1000, 300));
         table1.setRowSelectionAllowed(true);
 

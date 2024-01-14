@@ -32,9 +32,9 @@ public class AdminMainPage extends JPanel {
 		setBackground(Color.GRAY);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 200, 200, 0};
-		gridBagLayout.rowHeights = new int[]{29, 150, 150, 0};
+		gridBagLayout.rowHeights = new int[]{29, 150,150 ,150, 0};
 		gridBagLayout.columnWeights = new double[]{1.0, 6.0, 6.0, 1.0};
-		gridBagLayout.rowWeights = new double[]{1.0, 12.0, 12.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{1.0, 12.0,12.0, 12.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
 		JButton addPersonnelButton = new JButton("Add Personnel");
@@ -101,6 +101,22 @@ public class AdminMainPage extends JPanel {
 		gbc_addExpertiseButton.gridx = 2;
 		gbc_addExpertiseButton.gridy = 2;
 		add(addExpertiseButton, gbc_addExpertiseButton);
+
+
+		JButton statisticButton = new JButton("Statistics");
+		statisticButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				changePanel(parentFrame,new StatisticPage(parentFrame,userId));
+			}
+		});
+		statisticButton.setFont(new Font("Tahoma", Font.PLAIN, 35));
+		GridBagConstraints gbc_statisticButton = new GridBagConstraints();
+		gbc_statisticButton.insets = new Insets(0, 0, 5, 5);
+		gbc_statisticButton.fill = GridBagConstraints.BOTH;
+		gbc_statisticButton.gridx = 1;
+		gbc_addExpertiseButton.gridy = 3;
+		add(statisticButton, gbc_statisticButton);
 
 
 	}
