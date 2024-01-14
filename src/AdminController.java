@@ -75,7 +75,7 @@ public class AdminController {
         }catch (SQLException e){
             e.printStackTrace();
         }
-        return  -1;
+        return  0;
     }
 
 
@@ -101,6 +101,25 @@ public class AdminController {
 
         return dictionary;
 
+    }
+
+    public static Department getBookingDepartment(int bookingID){
+        String query  =" select departmentName\n" +
+                "from booking_stats\n" +
+                "where bookingID   =  ?;";
+        Connection myConn = DBConnection.getConnection();
+        Department dp = null;
+        try{
+            PreparedStatement stmt  = myConn.prepareStatement(query);
+            stmt.setInt(1,bookingID);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()){
+                dp = new Department(rs.getString("departmentName"));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return  dp;
     }
     // DONE : CAN ADD NURSE
     // DONE : CAN ADD ADMIN

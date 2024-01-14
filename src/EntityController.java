@@ -552,7 +552,11 @@ public class EntityController {
             if(availability !=null){
                 availabilities.add(availability);
             }else{
-                availabilities.add(new RoomAvailability(r.room_id,date));
+                 RoomAvailability roomav = new RoomAvailability(r.room_id,date);
+                 roomav.availability = true;
+
+                availabilities.add(roomav);
+
 
             }
         }

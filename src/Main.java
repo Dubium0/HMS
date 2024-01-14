@@ -3,10 +3,9 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        ArrayList<Appointment> apps = PatientController.getAppointments(14);
-        for(Appointment a : apps){
-            PatientController.deleteAppointment(a);
-        }
-
+        Timestamp ts = Timestamp.valueOf("2024-02-3 18:00:00");
+       for(RoomAvailability r :  EntityController.getRoomAvailabilitiesForDateLoseless(ts)){
+           System.out.println(r);
+       }
     }
 }
