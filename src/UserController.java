@@ -2,6 +2,8 @@ import javax.print.Doc;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Month;
+import java.time.Year;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.time.LocalDate;
@@ -535,58 +537,67 @@ public class UserController {
 
     public static ArrayList<Doctor> getFilteredDoctors(String expertiseName,int minDay, int maxDay, int minHour, int maxHour){
         Connection myConn = DBConnection.getConnection();
-        String query  = "Select *\n" +
-                "from doctor_view\n" +
-                "where doctor_view.userID != (select doctor_view.userID\n" +
-                "from doctor_view natural join EXPERTISE,  DOCTOR_AVAILABILITY\n" +
-                "where doctor_view.userID = DOCTOR_AVAILABILITY.doctorID and EXPERTISE.expertiseName = ?  and DOCTOR_AVAILABILITY.availability = 0\n" +
-                " and DATE(DOCTOR_AVAILABILITY.date_) >= ?  and DATE(DOCTOR_AVAILABILITY.date_) <= ?  and TIME(DOCTOR_AVAILABILITY.date_) >= ? " +
-                "and TIME(DOCTOR_AVAILABILITY.date_) <= ?) ;\n";
+            String query  = "SELECT *\n" +
+                    "FROM doctor_view natural join EXPERTISE\n" +
+                    "WHERE EXPERTISE.expertiseName = ? \n" +
+                    "  AND (\n" +
+                    "        doctor_view.userID IN (\n" +
+                    "            SELECT doctor_view.userID\n" +
+                    "            FROM DOCTOR_AVAILABILITY\n" +
+                    "            WHERE doctor_view.userID = DOCTOR_AVAILABILITY.doctorID\n" +
+                    "              AND DATE(DOCTOR_AVAILABILITY.date_) >= ?\n" +
+                    "              AND DATE(DOCTOR_AVAILABILITY.date_) <= ?\n" +
+                    "              AND TIME(DOCTOR_AVAILABILITY.date_) >= ?\n" +
+                    "              AND TIME(DOCTOR_AVAILABILITY.date_) <= ?\n" +
+                    "            GROUP BY doctor_view.userID\n" +
+                    "            HAVING COUNT(doctor_view.userID) < ?\n" +
+                    "        )\n" +
+                    "        OR\n" +
+                    "        doctor_view.userID IN (\n" +
+                    "            SELECT doctor_view.userID\n" +
+                    "            FROM DOCTOR_AVAILABILITY\n" +
+                    "            JOIN doctor_view ON doctor_view.userID = DOCTOR_AVAILABILITY.doctorID\n" +
+                    "            WHERE DOCTOR_AVAILABILITY.availability = 1\n" +
+                    "              AND DATE(DOCTOR_AVAILABILITY.date_) >= ?\n" +
+                    "              AND DATE(DOCTOR_AVAILABILITY.date_) <= ?\n" +
+                    "              AND TIME(DOCTOR_AVAILABILITY.date_) >= ?\n" +
+                    "              AND TIME(DOCTOR_AVAILABILITY.date_) <= ?\n" +
+                    "        )\n" +
+                    "    );";
 
-        String query_without_expertise  ="Select *\n" +
-                "from doctor_view\n" +
-                "where doctor_view.userID != (select doctor_view.userID\n" +
-                "from doctor_view ,  DOCTOR_AVAILABILITY\n" +
-                "where doctor_view.userID = DOCTOR_AVAILABILITY.doctorID and DOCTOR_AVAILABILITY.availability = 0\n" +
-                " and DATE(DOCTOR_AVAILABILITY.date_) >= ?  and DATE(DOCTOR_AVAILABILITY.date_) <= ?  and TIME(DOCTOR_AVAILABILITY.date_) >= ? " +
-                "and TIME(DOCTOR_AVAILABILITY.date_) <= ? );\n";
+        String query_without_expertise  ="SELECT *\n" +
+                "FROM doctor_view\n" +
+                "WHERE \t\tdoctor_view.userID IN (\n" +
+                "            SELECT doctor_view.userID\n" +
+                "            FROM DOCTOR_AVAILABILITY\n" +
+                "            WHERE doctor_view.userID = DOCTOR_AVAILABILITY.doctorID\n" +
+                "              AND DATE(DOCTOR_AVAILABILITY.date_) >= ?\n" +
+                "              AND DATE(DOCTOR_AVAILABILITY.date_) <= ?\n" +
+                "              AND TIME(DOCTOR_AVAILABILITY.date_) >= ?\n" +
+                "              AND TIME(DOCTOR_AVAILABILITY.date_) <= ?\n" +
+                "            GROUP BY doctor_view.userID\n" +
+                "            HAVING COUNT(doctor_view.userID) < ?\n" +
+                "        )\n" +
+                "        OR\n" +
+                "        doctor_view.userID IN (\n" +
+                "            SELECT doctor_view.userID\n" +
+                "            FROM DOCTOR_AVAILABILITY\n" +
+                "            JOIN doctor_view ON doctor_view.userID = DOCTOR_AVAILABILITY.doctorID\n" +
+                "            WHERE DOCTOR_AVAILABILITY.availability = 1\n" +
+                "              AND DATE(DOCTOR_AVAILABILITY.date_) >= ?\n" +
+                "              AND DATE(DOCTOR_AVAILABILITY.date_) <= ?\n" +
+                "              AND TIME(DOCTOR_AVAILABILITY.date_) >= ?\n" +
+                "              AND TIME(DOCTOR_AVAILABILITY.date_) <= ?\n" +
+                "        );";
 
-        YearMonth currentYearMonth = YearMonth.now();
-        int month = currentYearMonth.getMonthValue();
-        String monthSTR = "";
-
-        String yearSTR = String.valueOf(currentYearMonth.getYear());
-
-
-        if(month < 10){
-            monthSTR =  "0" + String.valueOf(month);
-        }else{
-            monthSTR = String.valueOf(month);
-        }
-
-        String minDate_STR;
-        String maxDate_STR;
-
-
-        if(minDay < 10){
-            minDate_STR=  yearSTR + "-" + monthSTR + "-" + "0"+ minDay;
-
-        }else{
-            minDate_STR=  yearSTR + "-" + monthSTR + "-" +  minDay;
-        }
-
-        if(maxDay < 10){
-            maxDate_STR=  yearSTR + "-" + monthSTR + "-" + "0" + maxDay;
-        }else{
-            maxDate_STR=  yearSTR + "-" + monthSTR + "-" + maxDay;
-        }
+        LocalDate currentDate = LocalDate.now();
+        LocalDate minDate=  currentDate.plusDays(minDay);
+        LocalDate maxDate= currentDate.plusDays(maxDay);
 
 
 
         String minHour_STR;
         String maxHour_STR;
-
-
 
 
         if(minHour < 10){
@@ -608,32 +619,39 @@ public class UserController {
 
 
         try{
-            System.out.println("min Year : " + minDate_STR);
-            System.out.println("max Year : " + maxDate_STR);
-            System.out.println("max hour : " + maxHour_STR);
-            System.out.println("min hour : " + minHour_STR);
 
-            Date minDate = Date.valueOf(minDate_STR);
-            Date maxDate = Date.valueOf(maxDate_STR);
+
+            Date minDate_ = Date.valueOf(minDate);
+            Date maxDate_ = Date.valueOf(maxDate);
             Time minTime = Time.valueOf(minHour_STR);
             Time maxTime = Time.valueOf(maxHour_STR);
             PreparedStatement stmt;
             if(expertiseName == null){
                 stmt = myConn.prepareStatement(query_without_expertise);
 
-                stmt.setDate(1,minDate);
-                stmt.setDate(2,maxDate);
+                stmt.setDate(1,minDate_);
+                stmt.setDate(2,maxDate_);
                 stmt.setTime(3,minTime);
                 stmt.setTime(4,maxTime);
+                stmt.setInt(5,maxHour-minHour);
+                stmt.setDate(6,minDate_);
+                stmt.setDate(7,maxDate_);
+                stmt.setTime(8,minTime);
+                stmt.setTime(9,maxTime);
             }
             else{
                 stmt = myConn.prepareStatement(query);
 
                 stmt.setString(1,expertiseName);
-                stmt.setDate(2,minDate);
-                stmt.setDate(3,maxDate);
+                stmt.setDate(2,minDate_);
+                stmt.setDate(3,maxDate_);
                 stmt.setTime(4,minTime);
                 stmt.setTime(5,maxTime);
+                stmt.setInt(6,maxHour-minHour);
+                stmt.setDate(7,minDate_);
+                stmt.setDate(8,maxDate_);
+                stmt.setTime(9,minTime);
+                stmt.setTime(10,maxTime);
 
             }
 
@@ -644,7 +662,7 @@ public class UserController {
 
                 Doctor doctor = new Doctor(rs.getString("name_surname"),rs.getInt("age"),rs.getString("user_name"),
                         rs.getString("gender"), rs.getInt("expertiseID"),String.valueOf(password));
-
+                doctor.user_id = rs.getInt("userID");
                 doctors.add(doctor);
             }
 
@@ -656,5 +674,6 @@ public class UserController {
         return  doctors;
 
     };
+
 
 }
