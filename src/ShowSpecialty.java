@@ -177,15 +177,8 @@ public class ShowSpecialty extends JPanel {
 		buttonPanel2.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		tempPanel2.add(buttonPanel2, BorderLayout.SOUTH);
 		
-		JButton editDepartmentButton = new JButton("Edit");
-		editDepartmentButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
-		editDepartmentButton.setPreferredSize(new Dimension(300, 100));
-		buttonPanel2.add(editDepartmentButton);
-		
-		JButton deleteDepartmentButton = new JButton("Delete");
-		deleteDepartmentButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
-		deleteDepartmentButton.setPreferredSize(new Dimension(300, 100));
-		buttonPanel2.add(deleteDepartmentButton);
+
+
 
 		JButton refreshButton1 = new JButton("Refresh");
 		refreshButton1.addMouseListener(new MouseAdapter() {
@@ -400,30 +393,7 @@ public class ShowSpecialty extends JPanel {
         buttonPanel4.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		tempPanel4.add(buttonPanel4, BorderLayout.SOUTH);
 		
-		JButton editExpertiseButton = new JButton("Edit");
-		editExpertiseButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				int selectedRow =table2.getSelectedRow();
-				if (selectedRow != -1){
-					int userId = (int) table2.getValueAt(selectedRow,0);
-					//editExpertiseWindow(userId);
-				}
-				else{
-					JOptionPane.showMessageDialog(new JFrame(), "there is no selected object!");
-				}
 
-
-			}
-		});
-		editExpertiseButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
-		editExpertiseButton.setPreferredSize(new Dimension(300, 100));
-		buttonPanel4.add(editExpertiseButton);
-		
-		JButton deleteExpertiseButton = new JButton("Delete");
-		deleteExpertiseButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
-		deleteExpertiseButton.setPreferredSize(new Dimension(300, 100));
-		buttonPanel4.add(deleteExpertiseButton);
 
 
 		JButton refreshButton2 = new JButton("Refresh");

@@ -209,15 +209,7 @@ public class ShowRoom extends JPanel {
         buttonPanel2.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		tempPanel2.add(buttonPanel2, BorderLayout.SOUTH);
 		
-		JButton editRoomButton = new JButton("Edit");
-		editRoomButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
-		editRoomButton.setPreferredSize(new Dimension(300, 100));
-		buttonPanel2.add(editRoomButton);
-		
-		JButton deleteRoomButton = new JButton("Delete");
-		deleteRoomButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
-		deleteRoomButton.setPreferredSize(new Dimension(300, 100));
-		buttonPanel2.add(deleteRoomButton);
+
 
 		JButton refreshButton = new JButton("Refresh");
 		refreshButton.addMouseListener(new MouseAdapter() {

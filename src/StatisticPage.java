@@ -5,6 +5,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Map;
 
 public class StatisticPage extends JPanel {
     private JFrame parentFrame;
@@ -55,12 +57,11 @@ public class StatisticPage extends JPanel {
         DefaultTableModel model1 =addTable(tablePanel,"Number of Patient According to Department",new String[]{"Number of Patient","Department Name"});
         DefaultTableModel model2 =addTable(tablePanel,"Number of Patient According to Date",new String[]{"Date","Number of Patient"});
         DefaultTableModel model3 =addTable(tablePanel,"Ratio of Appointment and Booking",new String[]{"Department Name","Ratio"});
-        DefaultTableModel model4 =addTable(tablePanel,"Table 4: Title 4",new String[]{"asdsa","ddsd"});
-        DefaultTableModel model5 =addTable(tablePanel,"Table 5: Title 5",new String[]{"asdsa","ddsd"});
-        DefaultTableModel model6 =addTable(tablePanel,"Table 6: Title 6",new String[]{"asdsa","ddsd"});
+        DefaultTableModel model4 =addTable(tablePanel,"getDepartmentsMostBookedRooms",new String[]{"Departmnt Name","Booking"});
         refreshTables1(model1);
         refreshTables2(model2);
         refreshTables3(model3);
+        refreshTables4(model4);
 
 
         refreshButton.addMouseListener(new MouseAdapter() {
@@ -68,7 +69,8 @@ public class StatisticPage extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 refreshTables1(model1);
                 refreshTables2(model2);
-                //add other
+                refreshTables3(model3);
+                refreshTables4(model4);
             }
         });
 
@@ -152,10 +154,19 @@ public class StatisticPage extends JPanel {
 
     private void refreshTables3(DefaultTableModel model) {
         model.setRowCount(0);
-        ArrayList<Expertise> expertiseArrayList=  EntityController.getExpertises();
-        for (Expertise expertise:expertiseArrayList){
-            double ratio = AdminController.getRatioOfAppointmentsAndBookingsForDepartment(expertise.name);
-            Object[] rowData = {expertise.name,ratio};
+        ArrayList<Department> departmentArrayList=  EntityController.getDepartments();
+        for (Department department:departmentArrayList){
+            double ratio = AdminController.getRatioOfAppointmentsAndBookingsForDepartment(department.name);
+            Object[] rowData = {department.name,ratio};
+            model.addRow(rowData);
+        }
+    }
+
+    private void refreshTables4(DefaultTableModel model) {
+        model.setRowCount(0);
+        Map<String, Integer> dictionary= AdminController.getDepartmentsMostBookedRooms();
+        for (Map.Entry<String, Integer> entry : dictionary.entrySet()) {
+            Object[] rowData = {entry.getKey(),entry.getValue()};
             model.addRow(rowData);
         }
     }

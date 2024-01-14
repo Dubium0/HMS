@@ -96,15 +96,9 @@ public class ShowPersonnel extends JPanel {
         buttonPanel1.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		tempPanel1.add(buttonPanel1, BorderLayout.SOUTH);
 		
-		JButton editRoomButton = new JButton("Edit");
-		editRoomButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
-		editRoomButton.setPreferredSize(new Dimension(300, 100));
-		buttonPanel1.add(editRoomButton);
+
 		
-		JButton deleteDoctorButton = new JButton("Delete");
-		deleteDoctorButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
-		deleteDoctorButton.setPreferredSize(new Dimension(300, 100));
-		buttonPanel1.add(deleteDoctorButton);
+
 
 		JButton refreshButton1 = new JButton("Refresh");
 		refreshButton1.addMouseListener(new MouseAdapter() {
@@ -193,16 +187,9 @@ public class ShowPersonnel extends JPanel {
         JPanel buttonPanel2 = new JPanel();
         buttonPanel2.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		tempPanel2.add(buttonPanel2, BorderLayout.SOUTH);
+
 		
-		JButton editNurseButton = new JButton("Edit");
-		editNurseButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
-		editNurseButton.setPreferredSize(new Dimension(300, 100));
-		buttonPanel2.add(editNurseButton);
-		
-		JButton deleteNurseButton = new JButton("Delete");
-		deleteNurseButton.setFont(new Font("Tahoma", Font.PLAIN, 30));
-		deleteNurseButton.setPreferredSize(new Dimension(300, 100));
-		buttonPanel2.add(deleteNurseButton);
+
 
 		JButton refreshButton2 = new JButton("Refresh");
 		refreshButton2.addMouseListener(new MouseAdapter() {
