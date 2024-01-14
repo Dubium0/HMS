@@ -176,6 +176,27 @@ public class UserController {
 
         return  nurse;
     }
+    public  static boolean deleteNurse(int nurseID){
+        String query=  "delete from NURSE\n" +
+                "where NURSE.nurseID =   ? ;";
+
+        Connection myConn = DBConnection.getConnection();
+        boolean result = false;
+        try{
+            PreparedStatement stmt = myConn.prepareStatement(query,PreparedStatement.RETURN_GENERATED_KEYS);
+            stmt.setInt(1,nurseID);
+            int r  = stmt.executeUpdate();
+            if(r>0){
+                ResultSet rs = stmt.getResultSet();
+                result =   true;
+            }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+            result =  false;
+        }
+        return result;
+    }
     public static Nurse getNurse(String user_name){
         Connection myConn = DBConnection.getConnection();
         String query = "SELECT * FROM nurse_view where  nurse_view.user_name = ?";

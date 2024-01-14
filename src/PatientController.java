@@ -42,14 +42,23 @@ public class PatientController {
 
 
             try {
-                PreparedStatement stmt = myConn.prepareStatement(query);
+                PreparedStatement stmt = myConn.prepareStatement(query,PreparedStatement.RETURN_GENERATED_KEYS);
                 stmt.setInt(1,appointment.patient_id);
                 stmt.setInt(2,appointment.doctor_id);
+
                 stmt.setTimestamp(3,appointment.date);
 
                 int r = stmt.executeUpdate();
                 if(r>0){
-                    return  true;
+                    ResultSet rs = stmt.getResultSet();
+                    boolean result  = false ;
+                    if(rs.next()){
+                       result = DoctorController.deleteBooking(rs.getInt("bookingID") , appointment.date);
+
+
+                    }
+
+                    return  result;
                 }
 
             }catch (SQLException e){

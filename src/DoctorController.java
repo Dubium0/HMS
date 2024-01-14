@@ -166,6 +166,53 @@ public class DoctorController {
         }
         return  false;
     }
+    private  static  boolean decrementRoomPatientCount(Timestamp date, int room_id){
+       String query =  "UPDATE room_availability\n" +
+                "set room_availability.patientCount = room_availability.patientCount-1, room_availability.availability   = true\n" +
+                "where room_availability.date_  = ? and ROOM_AVAILABILITY.roomID  =?;";
+
+       Connection myConn  = DBConnection.getConnection();
+       try{
+           PreparedStatement stmt = myConn.prepareStatement(query);
+           stmt.setTimestamp(1,date);
+           stmt.setInt(2,room_id);
+           int r = stmt.executeUpdate();
+           if(r>0){
+               return  true;
+           }
+
+       }catch (SQLException e){
+           e.printStackTrace();
+       }
+       return  false;
+    }
+    public  static boolean deleteBooking(int bookingID, Timestamp date){
+        String query=  "delete from BOOKING\n" +
+                       "where BOOKING.bookingID =   ? ;";
+
+        Connection myConn = DBConnection.getConnection();
+        boolean result = false;
+        try{
+            PreparedStatement stmt = myConn.prepareStatement(query);
+            stmt.setInt(1,bookingID);
+            int r  = stmt.executeUpdate();
+            if(r>0){
+                ResultSet rs = stmt.getResultSet();
+                if(rs.next()){
+
+                    NurseController.updateNurseAvailabilityForDateAndNurse(date,rs.getInt("nurseID"),false);
+                    decrementRoomPatientCount(date, rs.getInt("roomID"));
+
+                }
+                result =   true;
+            }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+            result =  false;
+        }
+        return result;
+    }
 
     public  static  boolean updateDoctorAvailability(Date date, int doctor_id, boolean isAvailable){
         Connection myConn = DBConnection.getConnection();
@@ -195,6 +242,8 @@ public class DoctorController {
         return  false;
 
     }
+
+
 
     public  static  boolean checkDoctorAvailability(Date date, int doctor_id){
         Connection myConn = DBConnection.getConnection();

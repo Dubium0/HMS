@@ -87,7 +87,7 @@ public class NurseController {
 
     }
 
-    public  static boolean updateNurseAvailabilityForDateAndNurse(Date date , int nurse_id, boolean isAvailable){
+    public  static boolean updateNurseAvailabilityForDateAndNurse(Timestamp date , int nurse_id, boolean isAvailable){
 
         Connection myConn = DBConnection.getConnection();
         String query = "INSERT INTO NURSE_AVAILABILITY (nurseID, date_, availability) VALUES\n" +
@@ -96,7 +96,7 @@ public class NurseController {
         try {
             PreparedStatement stmt = myConn.prepareStatement(query);
             stmt.setInt(1,nurse_id);
-            stmt.setDate(2,date);
+            stmt.setTimestamp(2,date);
             stmt.setBoolean(3,isAvailable);
             stmt.setBoolean(4,isAvailable);
 
