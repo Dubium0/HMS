@@ -38,7 +38,7 @@ public class NurseController {
         Connection myConn = DBConnection.getConnection();
 
         String query  = "SELECT *  from NURSE_AVAILABILITY where  NURSE_AVAILABILITY.nurseID = ? and  NURSE_AVAILABILITY.date_ = ? ;";
-        NurseAvailability availability = null;
+        NurseAvailability availability =  new NurseAvailability(nurse_id,date,true);
 
         try {
             PreparedStatement stmt= myConn.prepareStatement(query);
