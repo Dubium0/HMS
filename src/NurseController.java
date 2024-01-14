@@ -120,7 +120,7 @@ public class NurseController {
         ArrayList<Nurse> nurses= UserController.getNurses();
         LocalDate localDate = LocalDate.now();
         for (int k  = 0; k <7 ; k++){
-            localDate.plusDays(1);
+
             for(int i = 8 ; i <=17 ;i++){
                 String currentDate  = localDate.toString();
 
@@ -144,12 +144,70 @@ public class NurseController {
                 }
 
             }
-
+            localDate.plusDays(1);
         }
 
         return  availabilities;
 
     }
+    public  static ArrayList<NurseAvailability> getNurseAvailabilitiesForNext_7_days(int nurseID){
+        // sabah 8 akşam 17
+        ArrayList<NurseAvailability> availabilities = new ArrayList<>();
+        LocalDate localDate = LocalDate.now();
+        for (int k  = 0; k <7 ; k++){
+
+            for(int i = 8 ; i <=17 ;i++){
+                String currentDate  = localDate.toString();
+
+                if( i< 10){
+                    currentDate +=  " 0" + i + ":00:00";
+                }else{
+                    currentDate +=  " " + i + ":00:00";
+                }
+
+                Timestamp date_ =Timestamp.valueOf(currentDate);
+
+
+                NurseAvailability availability =getNurseAvailabilityForDateAndNurse_NurseAvailability(date_,nurseID);
+
+                if(availability!= null){
+                    availabilities.add(availability);
+                }else{
+                    availabilities.add(new NurseAvailability(nurseID,date_,true));
+
+                }
+
+
+            }
+            localDate.plusDays(1);
+        }
+
+        return  availabilities;
+
+    }
+
+    public  static ArrayList<NurseAvailability> getNurseAvailabilitiesForDateLoseless(Timestamp date){
+        // sabah 8 akşam 17
+        ArrayList<NurseAvailability> availabilities = new ArrayList<>();
+        ArrayList<Nurse> nurses= UserController.getNurses();
+
+        for(Nurse n :nurses){
+            NurseAvailability availability =getNurseAvailabilityForDateAndNurse_NurseAvailability(date,n.user_id);
+
+            if(availability!= null){
+                availabilities.add(availability);
+            }else{
+                availabilities.add(new NurseAvailability(n.user_id,date,true));
+
+            }
+        }
+
+
+
+        return  availabilities;
+
+    }
+
     public  static boolean updateNurseAvailabilityForDateAndNurse(Timestamp date , int nurse_id, boolean isAvailable){
 
         Connection myConn = DBConnection.getConnection();

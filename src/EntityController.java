@@ -474,7 +474,7 @@ public class EntityController {
         ArrayList<Room> rooms=getRooms();
         LocalDate localDate = LocalDate.now();
         for (int k  = 0; k <7 ; k++){
-            localDate.plusDays(1);
+
             for(int i = 8 ; i <=17 ;i++){
                 String currentDate  = localDate.toString();
 
@@ -498,7 +498,63 @@ public class EntityController {
                 }
 
             }
+            localDate.plusDays(1);
+        }
 
+        return  availabilities;
+
+    }
+    public  static ArrayList<RoomAvailability> getRoomAvailabilitiesForNext_7_days(int roomID){
+        // sabah 8 akşam 17
+        ArrayList<RoomAvailability> availabilities = new ArrayList<>();
+        LocalDate localDate = LocalDate.now();
+        for (int k  = 0; k <7 ; k++){
+
+            for(int i = 8 ; i <=17 ;i++){
+                String currentDate  = localDate.toString();
+
+                if( i< 10){
+                    currentDate +=  " 0" + i + ":00:00";
+                }else{
+                    currentDate +=  " " + i + ":00:00";
+                }
+
+                Timestamp date_ =Timestamp.valueOf(currentDate);
+
+
+                RoomAvailability availability =getRoomAvailabilityForDateAndRoom(date_,roomID);
+
+                if(availability !=null){
+                    availabilities.add(availability);
+                }else{
+                    availabilities.add(new RoomAvailability(roomID,Timestamp.valueOf(currentDate)));
+
+                }
+
+
+            }
+            localDate.plusDays(1);
+
+        }
+
+        return  availabilities;
+
+    }
+
+    public  static ArrayList<RoomAvailability> getRoomAvailabilitiesForDateLoseless(Timestamp date){
+        // sabah 8 akşam 17
+        ArrayList<RoomAvailability> availabilities = new ArrayList<>();
+        ArrayList<Room> rooms=getRooms();
+
+        for(Room r : rooms){
+            RoomAvailability availability =getRoomAvailabilityForDateAndRoom(date,r.room_id);
+
+            if(availability !=null){
+                availabilities.add(availability);
+            }else{
+                availabilities.add(new RoomAvailability(r.room_id,date));
+
+            }
         }
 
         return  availabilities;

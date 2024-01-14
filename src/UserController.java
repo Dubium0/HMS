@@ -152,6 +152,7 @@ public class UserController {
 
         return  nurses;
     }
+
     public static Nurse getNurse(int id){
         Connection myConn = DBConnection.getConnection();
         String query = "SELECT * FROM nurse_view where  nurse_view.userID = ?";
