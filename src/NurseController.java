@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class NurseController {
@@ -30,6 +31,33 @@ public class NurseController {
         }
 
         return  isAvailable;
+
+    }
+    public  static  NurseAvailability getNurseAvailabilityForDateAndNurse_NurseAvailability(Timestamp date , int nurse_id){
+
+        Connection myConn = DBConnection.getConnection();
+
+        String query  = "SELECT *  from NURSE_AVAILABILITY where  NURSE_AVAILABILITY.nurseID = ? and  NURSE_AVAILABILITY.date_ = ? ;";
+        NurseAvailability availability = null;
+
+        try {
+            PreparedStatement stmt= myConn.prepareStatement(query);
+
+            stmt.setInt(1,nurse_id);
+            stmt.setTimestamp(2,date);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if(rs.next()){
+                availability = new NurseAvailability(nurse_id,date,rs.getBoolean("availability"));
+            }
+
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return  availability;
 
     }
 
@@ -86,7 +114,42 @@ public class NurseController {
         return  nurseAvailabilities;
 
     }
+    public  static ArrayList<NurseAvailability> getNurseAvailabilitiesForNext_7_days(){
+        // sabah 8 akşam 17
+        ArrayList<NurseAvailability> availabilities = new ArrayList<>();
+        ArrayList<Nurse> nurses= UserController.getNurses();
+        LocalDate localDate = LocalDate.now();
+        for (int k  = 0; k <7 ; k++){
+            localDate.plusDays(1);
+            for(int i = 8 ; i <=17 ;i++){
+                String currentDate  = localDate.toString();
 
+                if( i< 10){
+                    currentDate +=  " 0" + i + ":00:00";
+                }else{
+                    currentDate +=  " " + i + ":00:00";
+                }
+
+                Timestamp date_ =Timestamp.valueOf(currentDate);
+
+                for(Nurse n :nurses){
+                    NurseAvailability availability =getNurseAvailabilityForDateAndNurse_NurseAvailability(date_,n.user_id);
+
+                    if(availability!= null){
+                        availabilities.add(availability);
+                    }else{
+                        availabilities.add(new NurseAvailability(n.user_id,date_,true));
+
+                    }
+                }
+
+            }
+
+        }
+
+        return  availabilities;
+
+    }
     public  static boolean updateNurseAvailabilityForDateAndNurse(Timestamp date , int nurse_id, boolean isAvailable){
 
         Connection myConn = DBConnection.getConnection();

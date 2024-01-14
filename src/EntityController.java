@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class EntityController {
@@ -403,6 +404,8 @@ public class EntityController {
         return  roomAvailability;
     }
 
+
+
     public  static ArrayList<RoomAvailability> getStatedRoomAvailabilityForRoom(int room_id){
         Connection myConn = DBConnection.getConnection();
         String query = "SElECT * FROM ROOM_AVAILABILITY where ROOM_AVAILABILITY.roomID = ? ;";
@@ -465,7 +468,42 @@ public class EntityController {
 
     }
 
+    public  static ArrayList<RoomAvailability> getRoomAvailabilitiesForNext_7_days(){
+        // sabah 8 akşam 17
+        ArrayList<RoomAvailability> availabilities = new ArrayList<>();
+        ArrayList<Room> rooms=getRooms();
+        LocalDate localDate = LocalDate.now();
+        for (int k  = 0; k <7 ; k++){
+            localDate.plusDays(1);
+            for(int i = 8 ; i <=17 ;i++){
+                String currentDate  = localDate.toString();
 
+                if( i< 10){
+                    currentDate +=  " 0" + i + ":00:00";
+                }else{
+                    currentDate +=  " " + i + ":00:00";
+                }
+
+                Timestamp date_ =Timestamp.valueOf(currentDate);
+
+                for(Room r : rooms){
+                    RoomAvailability availability =getRoomAvailabilityForDateAndRoom(date_,r.room_id);
+
+                    if(availability !=null){
+                        availabilities.add(availability);
+                    }else{
+                        availabilities.add(new RoomAvailability(r.room_id,Timestamp.valueOf(currentDate)));
+
+                    }
+                }
+
+            }
+
+        }
+
+        return  availabilities;
+
+    }
 
 
 

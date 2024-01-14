@@ -302,6 +302,7 @@ public class DoctorController {
         ArrayList<Doctor> doctors= UserController.getDoctors();
         LocalDate localDate = LocalDate.now();
         for (int k  = 0; k <7 ; k++){
+            localDate.plusDays(1);
             for(int i = 8 ; i <=17 ;i++){
                 String currentDate  = localDate.toString();
 

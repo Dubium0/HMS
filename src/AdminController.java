@@ -91,6 +91,7 @@ public class AdminController {
             while (rs.next()){
                 String departmentName =  rs.getString("departmentName");
                 Integer roomID  = rs.getInt("");
+                dictionary.put(departmentName,roomID);
             }
 
         }catch (SQLException e ){
